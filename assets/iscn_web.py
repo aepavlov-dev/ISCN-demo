@@ -17,7 +17,6 @@ import iscn_verbalize as VB
 
 BANDS = {}
 CASES = []
-EXERCISE = []
 REGIONS = {}          # справочник критических участков, если файл рядом с сайтом
 
 RT_RU = {
@@ -39,22 +38,20 @@ LOSS_RU = {
 
 
 def boot(assets: str = ".") -> dict:
-    """Загрузить таблицы цитобендов, примеры, упражнение и справочник участков."""
-    global CASES, EXERCISE, REGIONS
+    """Загрузить таблицы цитобендов, примеры и справочник критических участков."""
+    global CASES, REGIONS
     for build, fname in (("GRCh38", "cytoBand_hg38.txt"), ("hg19", "cytoBand_hg19.txt")):
         path = os.path.join(assets, fname)
         BANDS[build] = IF.CytobandTable(path, build=build)
     with open(os.path.join(assets, "cases.json")) as fh:
         CASES = json.load(fh)
-    with open(os.path.join(assets, "exercise.json")) as fh:
-        EXERCISE = json.load(fh)
     # справочник критических участков: если файла рядом нет, страница работает
     # на встроенном запасе модуля, о чём и сообщает
     path = os.path.join(assets, "critical_regions_v1.csv")
     if os.path.exists(path):
         REGIONS = VB.load_regions(path)
     return {"builds": sorted(BANDS), "cases": len(CASES), "forms": len(IF.FORMS),
-            "rules": len(IF.RULES), "exercise": len(EXERCISE),
+            "rules": len(IF.RULES),
             "profiles": len(VB.PROFILES), "regions": len(REGIONS),
             "verdicts": list(IV.VERDICTS)}
 
@@ -169,45 +166,6 @@ def _audit(text, build="GRCh38"):
     except Exception:                                     # noqa: BLE001
         out["bands"] = []
     return out
-
-
-def _exercise_check(key, text, build="GRCh38"):
-    """Сверка ответа участника со всеми допустимыми формами случая.
-
-    Верным считается совпадение с любой из допустимых форм, а не только с
-    канонической: формы равноправны, и участник вправе выбрать любую. Если
-    ответ не совпал ни с одной, показывается разбор введённой строки и
-    перечень форм, которые для этого случая неприменимы, — чаще всего
-    участник пишет именно такую.
-    """
-    case = next(c for c in CASES if c["key"] == key)
-    res = _analyse(case["case"], build)
-    got = " ".join((text or "").split())
-    # одна и та же строка может быть выдачей нескольких форм — тогда
-    # показываются все: это и есть совпадение форм, измеряемое отдельно
-    by_text: Dict[str, list] = {}
-    for f in res["forms"]:
-        if f["admissible"] and f["text"]:
-            by_text.setdefault(f["text"], []).append(f)
-    refused = [{"key": f["key"], "name": f["name"], "reason": f["detail"]}
-               for f in res["forms"] if not f["admissible"]]
-    out = {"key": key, "got": got, "canonical": res["canonical_text"],
-           "admissible": [{"key": fs[0]["key"], "text": t,
-                           "name": ", ".join(f["name"] for f in fs),
-                           "keys": [f["key"] for f in fs]}
-                          for t, fs in by_text.items()],
-           "refused": refused}
-    if got in by_text:
-        fs = by_text[got]
-        out["correct"] = True
-        out["matched"] = {"key": fs[0]["key"], "keys": [f["key"] for f in fs],
-                          "name": ", ".join(f["name"] for f in fs)}
-        return out
-    out["correct"] = False
-    out["audit"] = _audit(got, build) if got else {"status": "пусто"}
-    return out
-
-
 
 
 # ---------------------------------------------------------------------------
@@ -387,12 +345,6 @@ def api(payload: str) -> str:
                     "строки": [{"хромосома": k[0], "начало": k[1], "конец": k[2],
                                 "направление": k[3], "обозначение": v}
                                for k, v in sorted(REGIONS.items())]}
-        elif action == "exercise":
-            data = [{"key": e["key"], "description": e["description"]}
-                    for e in EXERCISE]
-        elif action == "exercise_check":
-            data = _exercise_check(req["key"], req.get("text", ""),
-                                   req.get("build", "GRCh38"))
         elif action == "forms":
             data = {"forms": {k: {"name": f.name_ru, "format": f.fmt,
                                   "system": f.system, "citation": f.citation}
