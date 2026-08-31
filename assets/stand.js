@@ -11,7 +11,7 @@ const LARK_WHEEL = "assets/lark-1.3.1-py3-none-any.whl";
 const PY_FILES = ["iscn_formula.py", "iscn_cases.py", "iscn_verbalize.py",
                   "iscn_validate.py", "iscn_web.py"];
 const DATA_FILES = ["cytoBand_hg38.txt", "cytoBand_hg19.txt", "cases.json",
-                    "exercise.json", "critical_regions_v1.csv"];
+                    "critical_regions_v1.csv"];
 
 let pyApi = null;
 let STATS = null;
@@ -95,11 +95,11 @@ iscn_web.boot("/home/pyodide")
     await initCases();
     initOwn();
     initAudit();
-    await initExercise();
-    await initForms();
+      await initForms();
   await initVerbalize();
   await initValidate();
   await initRegions();
+  await initAuditDescribe();
   } catch (err) {
     $("#bootbar").hidden = true;
     $("#boot").textContent = "";
@@ -370,62 +370,6 @@ function initAudit() {
 /* Вкладка 4: упражнение                                               */
 /* ------------------------------------------------------------------ */
 
-const exState = {};
-
-async function initExercise() {
-  const items = call({ action: "exercise" });
-  const list = $("#exList");
-  items.forEach((it, i) => {
-    const out = el("div", { class: "exout" });
-    const inp = el("input", { class: "exinp", placeholder: "формула ISCN" });
-    const check = () => {
-      const d = call({ action: "exercise_check", key: it.key, text: inp.value });
-      exState[it.key] = d.correct;
-      out.replaceChildren(exResult(d));
-      score(items.length);
-    };
-    inp.addEventListener("keydown", (e) => { if (e.key === "Enter") check(); });
-    list.appendChild(el("div", { class: "excase" },
-      el("div", { class: "exhead" }, el("b", {}, `${i + 1}. `), it.description,
-        el("span", { class: "fmeta" }, " · " + it.key)),
-      el("div", { class: "row" }, inp,
-        el("button", { onclick: check }, "Проверить")),
-      out));
-  });
-  score(items.length);
-}
-
-function exResult(d) {
-  if (d.correct) {
-    return el("div", { class: "ok box" }, "Верно — это ", el("b", {}, d.matched.name),
-      ". Другие допустимые записи того же случая: ",
-      el("ul", {}, d.admissible.filter((a) => a.key !== d.matched.key)
-        .map((a) => el("li", {}, el("code", {}, a.text), " — " + a.name))));
-  }
-  const kids = [el("div", { class: "bad" }, "Не совпало ни с одной допустимой формой.")];
-  if (d.audit && d.audit.status) {
-    kids.push(el("p", {}, "Разбор введённой строки: ",
-      el("b", { class: d.audit.status === "разобрано" ? "ok" : "bad" }, d.audit.status),
-      d.audit.detail ? " — " + d.audit.detail : ""));
-    (d.audit.violations || []).forEach((v) => kids.push(
-      el("p", { class: "viol1" }, el("code", {}, v.rule), " ", v.message)));
-  }
-  kids.push(el("p", {}, "Допустимые записи этого случая:"),
-    el("ul", {}, d.admissible.map((a) => el("li", {}, el("code", {}, a.text), " — " + a.name))));
-  if (d.refused.length) {
-    kids.push(el("details", {}, el("summary", {}, `Формы, неприменимые к этому случаю (${d.refused.length})`),
-      el("ul", {}, d.refused.map((r) => el("li", {}, el("b", {}, r.name), " — " + r.reason)))));
-  }
-  return el("div", { class: "box" }, kids);
-}
-
-function score(total) {
-  const done = Object.keys(exState).length;
-  const right = Object.values(exState).filter(Boolean).length;
-  $("#exScore").textContent = done
-    ? `Проверено ${done} из ${total}, верно ${right}.`
-    : "";
-}
 
 /* ------------------------------------------------------------------ */
 /* Вкладка 5: формы и потери                                           */
@@ -644,4 +588,74 @@ async function initRegions() {
   }
   $("#regFilter").addEventListener("input", e => draw(e.target.value));
   draw("");
+}
+
+/* ------------------------------------------------------------------ */
+/* Описание по произвольной записи (вкладка «Разбор чужой записи»)     */
+/* ------------------------------------------------------------------ */
+
+async function initAuditDescribe() {
+  const prof = await call({action: "profiles"});
+  const ps = $("#adProfile");
+  Object.keys(prof["профили"]).forEach(p => {
+    const o = document.createElement("option");
+    o.value = p; o.textContent = p;
+    ps.appendChild(o);
+  });
+  ps.value = "генетик";
+
+  async function run() {
+    const res = await call({
+      action: "describe_text", text: $("#auditText").value,
+      build: ($("#auditBuild") ? $("#auditBuild").value : "GRCh38"),
+      profile: ps.value, sex: $("#adSex").value,
+      detection_limit: $("#adLimit").value.replace(",", ".")
+    });
+    const V = {"годна": "good", "годна с замечаниями": "warn",
+               "требует решения": "warn", "негодна": "bad",
+               "вне области применения": "info"};
+    $("#adVerdict").className = "verdict " + (V[res["итог_контроля"]] || "info");
+    $("#adVerdict").textContent = "входной контроль: " + res["итог_контроля"] +
+      (res["описание"] ? " · описание собрано, обратная проверка текста: " +
+                         res["описание"]["проверка"]["итог"]
+                       : " · описание не выдано");
+    if (!res["описание"]) {
+      $("#adOut").innerHTML = "<p><b>Отказ.</b> " + (res["отказ"] || "") + "</p>" +
+        (res["подробности"] ? "<pre class=\"formula\">" + res["подробности"] + "</pre>" : "");
+      $("#adRebuilt").innerHTML = "";
+      return;
+    }
+    const names = {"вопрос": "Клинический вопрос", "вывод": "Вывод",
+                   "формула": "Запись по ISCN 2024", "расшифровка": "Что выявлено",
+                   "значимость": "Клиническая значимость", "ограничения": "Ограничения",
+                   "пригодность": "Пригодность к переносу",
+                   "что_дальше": "Что можно сделать дальше"};
+    let html = "";
+    ["вопрос", "вывод", "формула", "расшифровка", "значимость", "ограничения",
+     "пригодность", "что_дальше"].forEach(k => {
+      const body = res["описание"]["разделы"][k];
+      if (!body) return;
+      html += "<h4>" + names[k] + "</h4>";
+      html += (typeof body === "string")
+        ? "<pre class=\"formula\">" + body + "</pre>"
+        : "<ul>" + body.map(s => "<li>" + s + "</li>").join("") + "</ul>";
+    });
+    $("#adOut").innerHTML = html;
+    const rb = res["восстановлено"];
+    $("#adRebuilt").innerHTML = "<h4>Восстановленный набор событий</h4>" +
+      "<p>половой набор: " + (rb["половой_набор"] || "не заявлен") +
+      (rb["набор_назван_оператором"] ? " (назван оператором, из записи не следует)" : "") +
+      " · плоидность: " + rb["плоидность"] + "</p>" +
+      (rb["события"].length
+        ? "<table class=\"grid\"><thead><tr><th>хромосома</th><th>копийность</th>" +
+          "<th>базовая линия</th><th>границы</th><th>доля клеток</th></tr></thead><tbody>" +
+          rb["события"].map(e => "<tr><td>" + e["хромосома"] + "</td><td>" +
+            e["копийность"] + "</td><td>" + e["базовая_линия"] + "</td><td>" +
+            (e["начало"] ? e["начало"].toLocaleString("ru-RU") + "–" +
+                           e["конец"].toLocaleString("ru-RU") : "вся хромосома") +
+            "</td><td>" + (e["доля"] === null ? "—" : String(e["доля"]).replace(".", ",")) +
+            "</td></tr>").join("") + "</tbody></table>"
+        : "<p>событий нет: запись описывает эуплоидный профиль.</p>");
+  }
+  $("#adRun").addEventListener("click", run);
 }

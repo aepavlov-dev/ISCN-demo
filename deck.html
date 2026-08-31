@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Генератор формул ISCN 2024 — доклад</title>
+<!-- оформление встроено: файл открывается и пересылается отдельно -->
+<style>:root{
+  --ink:#16191d; --mute:#5f6b76; --line:#d8dee5; --bg:#fbfcfd; --card:#fff;
+  --ok:#0a6b3d; --bad:#a3231b; --warn:#8a5a00; --accent:#1b4f8f;
+  --okbg:#eaf6ee; --badbg:#fdeceb; --warnbg:#fdf5e3; --accbg:#eef4fb;
+  --mono:"SFMono-Regular",Consolas,"Liberation Mono",Menlo,monospace;
+}
+*{box-sizing:border-box}
+body{margin:0;font:16px/1.55 -apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  color:var(--ink);background:var(--bg)}
+code,pre{font-family:var(--mono);font-size:.93em}
+a{color:var(--accent)}
+h1,h2,h3{line-height:1.25;margin:0 0 .5em}
+
+/* ---------------- общая шапка ---------------- */
+header{display:flex;align-items:baseline;gap:1.5rem;flex-wrap:wrap;
+  padding:.9rem 1.4rem;border-bottom:1px solid var(--line);background:var(--card)}
+header h1{font-size:1.15rem;margin:0}
+header nav{margin-left:auto;display:flex;gap:1rem;align-items:baseline;font-size:.9rem}
+.boot{color:var(--mute)}
+#bootbar{height:3px;background:var(--line)}
+#bootfill{height:3px;width:0;background:var(--accent);transition:width .3s}
+footer{border-top:1px solid var(--line);margin-top:2rem;padding:1rem 1.4rem;
+  color:var(--mute);font-size:.85rem}
+.fatal{margin:2rem auto;max-width:44rem;padding:1.2rem 1.4rem;background:var(--badbg);
+  border:1px solid var(--bad);border-radius:8px}
+
+/* ---------------- стенд ---------------- */
+.stand main{padding:1.2rem 1.4rem;max-width:1600px;margin:0 auto}
+.tabs{display:flex;gap:.4rem;flex-wrap:wrap;border-bottom:1px solid var(--line);margin-bottom:1rem}
+.tab{border:1px solid var(--line);border-bottom:none;background:#eef1f4;
+  color:var(--mute);padding:.45rem .9rem;border-radius:7px 7px 0 0;cursor:pointer;
+  font-size:.95rem}
+.tab:hover{color:var(--ink);background:#e4e9ee}
+.tab.active{background:var(--card);color:var(--accent);font-weight:600;
+  box-shadow:0 2px 0 0 var(--card);border-top:2px solid var(--accent)}
+.panel{display:none}
+.panel.active{display:block}
+.lead{max-width:60rem;color:var(--mute)}
+.split{display:grid;grid-template-columns:minmax(300px,29%) 1fr;gap:1.4rem;align-items:start}
+@media(max-width:1100px){.split{grid-template-columns:1fr}}
+.col-narrow select{width:100%;font-family:var(--mono);font-size:.82rem}
+.desc{font-size:.9rem;background:var(--accbg);padding:.5rem .7rem;border-radius:6px}
+label{display:block;font-size:.82rem;color:var(--mute);margin-bottom:.5rem}
+label input,label select{display:block;width:100%;padding:.3rem .4rem;font-size:.92rem;
+  border:1px solid var(--line);border-radius:5px;color:var(--ink);background:#fff}
+label.chk{display:flex;align-items:center;gap:.4rem;font-size:.9rem}
+label.chk input{width:auto;display:inline}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:.5rem}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:.5rem}
+@media(max-width:1400px){.grid4{grid-template-columns:repeat(2,1fr)}}
+button{border:1px solid var(--accent);background:var(--accent);color:#fff;
+  padding:.4rem .9rem;border-radius:6px;cursor:pointer;font-size:.92rem}
+button.secondary{background:#fff;color:var(--accent)}
+button.rm,button.copy,button.link{background:#fff;color:var(--accent);
+  border:1px solid var(--line);padding:.15rem .5rem;font-size:.78rem}
+button.link{border:none;text-decoration:underline;padding:.15rem .2rem}
+.event{border:1px solid var(--line);border-radius:7px;padding:.6rem .7rem;margin-bottom:.6rem;background:var(--card)}
+.ehead{display:flex;justify-content:space-between;align-items:center;
+  font-size:.85rem;font-weight:600;margin-bottom:.4rem}
+.hint{margin-top:.8rem;font-size:.86rem;color:var(--mute)}
+.hint ul{padding-left:1.2rem}
+.row{display:flex;gap:.7rem;align-items:flex-start;margin:.6rem 0}
+.row textarea{flex:1;font-family:var(--mono);font-size:.9rem;padding:.5rem;
+  border:1px solid var(--line);border-radius:6px}
+.row input.exinp{flex:1;font-family:var(--mono);font-size:.92rem;padding:.4rem .5rem;
+  border:1px solid var(--line);border-radius:6px}
+.ctl{display:flex;gap:.6rem;align-items:flex-end}
+.samples{font-size:.86rem;color:var(--mute);display:flex;gap:.5rem;flex-wrap:wrap;align-items:baseline}
+
+/* ---------------- результаты ---------------- */
+.canon{display:flex;gap:.8rem;align-items:baseline;flex-wrap:wrap;
+  background:var(--accbg);border:1px solid #cfe0f2;border-radius:8px;padding:.6rem .8rem;margin-bottom:.8rem}
+.canon .lbl{font-size:.8rem;color:var(--mute);text-transform:uppercase;letter-spacing:.03em}
+code.big{font-size:1.05rem;font-weight:600;word-break:break-all}
+table{border-collapse:collapse;width:100%;background:var(--card);font-size:.92rem}
+th,td{border:1px solid var(--line);padding:.4rem .55rem;text-align:left;vertical-align:top}
+th{background:#f1f4f7;font-size:.82rem;color:var(--mute);font-weight:600}
+table.forms td:first-child{width:19rem}
+table.forms td:last-child{width:12rem}
+tr.canonrow{background:#f7fbff}
+.fname{font-weight:600}
+.fmeta{font-size:.78rem;color:var(--mute);font-family:var(--mono)}
+code.res{display:inline-block;word-break:break-all;background:#f6f8fa;
+  padding:.15rem .35rem;border-radius:4px;margin-right:.4rem}
+.reason{color:var(--mute);font-size:.88rem}
+.notes{margin-top:.35rem;display:flex;gap:.3rem;flex-wrap:wrap}
+.chip{font-size:.76rem;background:#eef1f4;color:var(--mute);border-radius:10px;padding:.05rem .5rem}
+.chip.lost{background:var(--warnbg);color:var(--warn)}
+.warnchip{background:var(--warnbg);color:var(--warn)}
+.errchip{background:var(--badbg);color:var(--bad);border-radius:10px;padding:.05rem .5rem;font-size:.76rem}
+.stylechip{background:var(--warnbg);color:var(--warn);border-radius:10px;padding:.05rem .5rem;font-size:.76rem}
+.ok{color:var(--ok)}
+.bad{color:var(--bad)}
+.off{color:var(--mute)}
+.box{border:1px solid var(--line);border-radius:7px;padding:.6rem .8rem;margin-top:.5rem;background:var(--card)}
+.ok.box{background:var(--okbg);border-color:#bcdcc8}
+.warn{background:var(--warnbg);border:1px solid #e6d2a0;border-radius:7px;
+  padding:.5rem .7rem;margin-bottom:.7rem;font-size:.9rem}
+.note{background:var(--accbg);border:1px solid #cfe0f2;border-radius:7px;
+  padding:.5rem .7rem;margin-bottom:.7rem;font-size:.9rem}
+.note ul,.facts{margin:.3rem 0;padding-left:1.2rem}
+.facts li{font-family:var(--mono);font-size:.86rem}
+table.viol td:first-child{width:5.5rem}
+tr.badrow{background:var(--badbg)}
+.viol1{font-size:.88rem;margin:.2rem 0}
+.excase{border:1px solid var(--line);border-radius:8px;padding:.7rem .9rem;
+  margin-bottom:.7rem;background:var(--card)}
+.exhead{margin-bottom:.4rem}
+.score{margin-top:.8rem;font-weight:600}
+.scrollx{overflow-x:auto;max-width:100%}
+table.loss{font-size:.85rem;min-width:52rem}
+table.loss td:first-child{width:13rem}
+table.loss th.key{text-align:center;white-space:nowrap;font-family:var(--mono);
+  font-size:.78rem;padding:.35rem .4rem}
+table.loss td.yes{background:var(--okbg);text-align:center;font-weight:700;color:var(--ok)}
+table.loss td.no{background:var(--badbg);text-align:center;color:var(--bad)}
+tr.rates td{background:#f1f4f7;text-align:center;font-family:var(--mono);font-size:.82rem}
+tr.rates td:first-child{text-align:left;font-family:inherit;color:var(--mute)}
+table.legend{font-size:.86rem;min-width:44rem}
+table.legend td:first-child,table.legend td:last-child{white-space:nowrap}
+
+/* ---------------- слайды ---------------- */
+body.deck{background:#0f1216;color:#e9edf2}
+.slide{min-height:100vh;display:none;padding:3.5vh 5vw 8vh;flex-direction:column}
+.slide.active{display:flex}
+.slide h2{font-size:2.1rem;margin:0 0 .2em;color:#fff}
+.slide .kicker{color:#8fb4e0;text-transform:uppercase;letter-spacing:.08em;
+  font-size:.8rem;margin-bottom:.6rem}
+.slide .body{font-size:1.15rem;max-width:70rem}
+.slide ul{padding-left:1.3rem}
+.slide li{margin-bottom:.45em}
+.slide code{background:#1c222a;color:#e8eef6;padding:.1rem .35rem;border-radius:4px;
+  word-break:break-all}
+.deck .num{display:flex;gap:2.2rem;flex-wrap:wrap;margin:1.2rem 0}
+.deck .num div{background:#161b22;border:1px solid #2a323c;border-radius:10px;
+  padding:.8rem 1.1rem;min-width:9rem}
+.deck .num b{display:block;font-size:2.1rem;color:#fff;line-height:1.1}
+.deck .num span{font-size:.85rem;color:#9aa7b4}
+.deck table{background:#141922;color:#dfe6ee;font-size:.95rem}
+.deck th{background:#1b2230;color:#9aa7b4;border-color:#2a323c}
+.deck td{border-color:#2a323c}
+.deck .hl{color:#ffd479}
+.deck .bad{color:#ff8f85}
+.deck .ok{color:#8ee0ab}
+.deckbar{position:fixed;bottom:0;left:0;right:0;display:flex;align-items:center;
+  gap:1rem;padding:.5rem 1.2rem;background:#0b0e12;border-top:1px solid #232a33;
+  font-size:.85rem;color:#8b98a6}
+.deckbar button{background:#1b2230;border-color:#2a323c;color:#dfe6ee;padding:.25rem .7rem}
+.deckbar a{color:#8fb4e0}
+.deckbar .pos{margin-left:auto;font-family:var(--mono)}
+
+/* ---------------- отчёт ---------------- */
+body.doc{max-width:52rem;margin:0 auto;padding:0 1.4rem 4rem;background:#fff}
+body.doc header{margin:0 -1.4rem 1.5rem;border-radius:0}
+body.doc h2{font-size:1.4rem;margin-top:2rem;padding-top:.6rem;border-top:1px solid var(--line)}
+body.doc h3{font-size:1.06rem;margin-top:1.4rem}
+body.doc table{font-size:.9rem;margin:1rem 0}
+body.doc code{background:#f4f6f8;padding:.08rem .3rem;border-radius:4px}
+body.doc blockquote{margin:1rem 0;padding:.6rem .9rem;background:var(--accbg);
+  border-left:3px solid var(--accent);font-size:.95rem}
+.finding{border:1px solid var(--line);border-left:4px solid var(--bad);
+  border-radius:6px;padding:.7rem .9rem;margin:.9rem 0;background:#fff}
+.finding h3{margin-top:0}
+.toc{background:#f6f8fa;border:1px solid var(--line);border-radius:8px;padding:.8rem 1rem}
+.toc ol{margin:.3rem 0;padding-left:1.4rem}
+.toc a{text-decoration:none}
+@media print{
+  header nav,.deckbar{display:none}
+  body.doc{max-width:none}
+  .slide{display:block;min-height:auto;page-break-after:always}
+}
+
+/* --- вкладки стенда, добавленные для заключения и контроля записи --- */
+.verdict{margin:.6rem 0;padding:.5rem .7rem;border-radius:6px;font-weight:600;
+         border:1px solid var(--line);background:var(--card)}
+.verdict.good{border-color:var(--ok);color:var(--ok)}
+.verdict.warn{border-color:var(--warn);color:var(--warn)}
+.verdict.bad{border-color:var(--bad);color:var(--bad)}
+.verdict.info{border-color:var(--line);color:var(--mute)}
+.col-wide{flex:1 1 62%;min-width:0}
+.col-narrow input[type=text]{width:100%;font-family:var(--mono);font-size:.8rem;
+         padding:.25rem .35rem;margin-bottom:.4rem}
+.col-narrow label{display:block;margin:.5rem 0 .15rem;font-size:.78rem;color:var(--mute)}
+fieldset#vbFlags{border:1px solid var(--line);border-radius:6px;margin:.5rem 0;padding:.4rem .6rem}
+fieldset#vbFlags legend{font-size:.76rem;color:var(--mute);padding:0 .3rem}
+label.check{display:block;font-size:.78rem;color:var(--ink);margin:.12rem 0}
+label.check input{margin-right:.35rem}
+button.primary{margin-top:.5rem;padding:.4rem .8rem;border-radius:6px;cursor:pointer;
+         border:1px solid var(--accent);background:var(--accent);color:#fff;font-weight:600}
+button.primary:hover{filter:brightness(1.08)}
+pre.formula{font-family:var(--mono);font-size:.86rem;background:var(--card);
+         border:1px solid var(--line);border-radius:6px;padding:.5rem .6rem;
+         overflow-x:auto;white-space:pre-wrap;word-break:break-all}
+#p-verb ul,#p-reg ul{margin:.3rem 0 .6rem 1.1rem}
+#p-verb li{margin:.16rem 0}
+#regOut table,#ivOut table{width:100%}
+#regFilter{font-family:var(--mono);font-size:.8rem;padding:.25rem .4rem;min-width:22rem}
+</style>
+</head>
+<body class="deck">
+<section class="slide" data-n="1"><div class="kicker">Задача</div><h2>Запись результата — узкое место, а не мелочь</h2><div class="body">
+<p>Результат поиска аберраций получен. Дальше его надо записать так, чтобы запись
+означала ровно то, что найдено, и читалась одинаково в нашем отчёте, в чужой
+лаборатории и через пять лет в архиве. Это отдельная задача со своим стандартом —
+ISCN 2024.</p>
+<p>Насколько она нетривиальна, измерено независимо. Chebly, Veronese и Chevret
+дали 18 задач на запись формулы языковой модели ChatGPT (версия GPT-4-turbo) и
+сверили ответы с ISCN 2024:</p>
+<div class="num"><div><b>20 %</b><span>верных формул</span></div><div><b>28 %</b><span>неточных</span></div><div><b>52 %</b><span>полностью ошибочных</span></div></div>
+<p>Ошибки там не экзотические: порядок аберраций, запятая между перестройками
+одной хромосомы, несогласованное число хромосом. Ровно те места, где ошибается
+и человек.</p>
+<p class="fmeta">Chebly A, Veronese L, Chevret E. Assessing the reliability of
+ChatGPT in cytogenetic reporting and interpretation: implications for clinical
+use. Mol Cytogenet 2025;18:16.
+<a href="https://doi.org/10.1186/s13039-025-00717-4">doi:10.1186/s13039-025-00717-4</a>
+· открытый доступ (gold OA), полный текст также в PubMed Central</p>
+</div></section><section class="slide" data-n="2"><div class="kicker">Что сделано</div><h2>Генератор формул с обратной проверкой</h2><div class="body">
+<ul>
+<li>Один типизированный вход — набор событий: сборка, половой набор, плоидность,
+координаты, копийность, доля мозаицизма, зиготность, происхождение, механизм.</li>
+<li>11 форм записи выводятся из этого набора. Ни одна форма не
+переписывает другую и ни одна не собирается языковой моделью.</li>
+<li>Правила взяты из текста ISCN 2024: 64 пунктов
+проведены в код, каждый с обозначением пункта.</li>
+<li>Полосы вычисляются из координат по таблице заявленной сборки, поэтому
+обозначение полосы и координаты согласованы по построению.</li>
+</ul>
+<div class="num"><div><b>64</b><span>пунктов стандарта</span></div><div><b>11</b><span>форм записи</span></div><div><b>40</b><span>правил грамматики</span></div><div><b>786</b><span>проверок в наборе</span></div></div>
+</div></section><section class="slide" data-n="3"><div class="kicker">Источник</div><h2>Что взято за источник и что с ним сделано</h2><div class="body">
+<p><b>ISCN 2024: An International System for Human Cytogenomic Nomenclature.</b>
+McGovern&nbsp;Jordan, Hastings, Gersen (ред.), Karger, 2024.
+<a href="https://karger.com/books/book/6011">karger.com/books/book/6011</a>.
+Файл предоставлен внутри компании и остаётся во внутреннем хранилище: книга
+защищена авторским правом и в открытый репозиторий не выкладывается.</p>
+<p>Тело книги в файле — постранично вставленные изображения; извлекаемого текста
+15 104 знака,
+и это только список литературы. Текст получен распознаванием изображений.</p>
+<div class="num"><div><b>377</b><span>изображений распознано</span></div><div><b>614 143</b><span>знаков получено</span></div><div><b>0</b><span>отказов распознавания</span></div></div>
+<p>По распознанному тексту восстановлена карта глав; в работу взяты главы
+3 (обозначения), 4 (общие правила), 5 (кариотип), 8 (микрочип) и
+11 (секвенирование). Из них выписано 64 пунктов;
+обозначение каждого сверено с заголовком раздела и буквенным пунктом
+первоисточника, и в реестр вынесена выдержка. Таблица цитобендов взята из
+источника, предписанного пунктом 4.4.5a.</p></div></section><section class="slide" data-n="4"><div class="kicker">Устройство</div><h2>Обратная проверка как обязательный этап выдачи</h2><div class="body">
+<p>Выданная строка разбирается обратно — независимой формальной грамматикой
+(40 правил, 40 терминалов),
+которая не обращается к генератору. Восстановленный набор фактов сравнивается
+с проекцией случая на эту форму — с перечнем признаков, которые форма способна
+выразить. Расхождение блокирует выдачу.</p>
+<p>Смысл в том, что проверка не может воспроизвести ошибку генератора: это
+вторая, независимая реализация тех же правил.</p>
+<div style="margin:.7rem 0 .2rem"><svg viewBox="0 0 1000 320" width="100%" role="img" aria-label="Схема выдачи формулы: генерация, независимый разбор, сравнение наборов фактов"><defs><marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#5b6b7d"/></marker></defs><rect x="390" y="8" width="220" height="46" rx="8" fill="#1b2a3d" stroke="#3d5a80"/><text x="500.0" y="27.5" text-anchor="middle" font-size="13" font-weight="600" fill="#e9edf2">Набор событий</text><text x="500.0" y="43.5" text-anchor="middle" font-size="11.5" font-weight="400" fill="#9aa7b4">один вход для всех форм</text><path d="M430,54 L230,84" stroke="#5b6b7d" stroke-width="1.4" fill="none" marker-end="url(#ar)"/><path d="M570,54 L770,84" stroke="#5b6b7d" stroke-width="1.4" fill="none" marker-end="url(#ar)"/><rect x="40" y="84" width="280" height="50" rx="8" fill="#161b22" stroke="#2a323c"/><text x="180.0" y="105.5" text-anchor="middle" font-size="13" font-weight="600" fill="#e9edf2">Генератор формы</text><text x="180.0" y="121.5" text-anchor="middle" font-size="11.5" font-weight="400" fill="#9aa7b4">правило и пункт ISCN на каждый знак</text><rect x="680" y="84" width="280" height="50" rx="8" fill="#161b22" stroke="#2a323c"/><text x="820.0" y="105.5" text-anchor="middle" font-size="13" font-weight="600" fill="#e9edf2">Проекция случая на форму</text><text x="820.0" y="121.5" text-anchor="middle" font-size="11.5" font-weight="400" fill="#9aa7b4">что форма способна передать</text><path d="M180,134 L180,176" stroke="#5b6b7d" stroke-width="1.4" fill="none" marker-end="url(#ar)"/><text x="187.0" y="159.0" text-anchor="start" font-size="11" fill="#8b98a6">строка ISCN</text><path d="M820,134 L820,176" stroke="#5b6b7d" stroke-width="1.4" fill="none" marker-end="url(#ar)"/><text x="813.0" y="159.0" text-anchor="end" font-size="11" fill="#8b98a6">набор фактов</text><rect x="40" y="176" width="280" height="50" rx="8" fill="#161b22" stroke="#2a323c"/><text x="180.0" y="197.5" text-anchor="middle" font-size="13" font-weight="600" fill="#e9edf2">Разбор независимой грамматикой</text><text x="180.0" y="213.5" text-anchor="middle" font-size="11.5" font-weight="400" fill="#9aa7b4">к генератору не обращается</text><rect x="680" y="176" width="280" height="50" rx="8" fill="#161b22" stroke="#2a323c"/><text x="820.0" y="197.5" text-anchor="middle" font-size="13" font-weight="600" fill="#e9edf2">Факты, обязательные для формы</text><text x="820.0" y="213.5" text-anchor="middle" font-size="11.5" font-weight="400" fill="#9aa7b4">эталон сравнения</text><path d="M320,201 L428,201" stroke="#5b6b7d" stroke-width="1.4" fill="none" marker-end="url(#ar)"/><path d="M680,201 L572,201" stroke="#5b6b7d" stroke-width="1.4" fill="none" marker-end="url(#ar)"/><rect x="430" y="176" width="140" height="50" rx="8" fill="#1b2a3d" stroke="#3d5a80"/><text x="500.0" y="197.5" text-anchor="middle" font-size="13" font-weight="600" fill="#e9edf2">Сравнение</text><text x="500.0" y="213.5" text-anchor="middle" font-size="11.5" font-weight="400" fill="#9aa7b4">тождество наборов</text><path d="M470,226 L355,258" stroke="#5b6b7d" stroke-width="1.4" fill="none" marker-end="url(#ar)"/><path d="M530,226 L645,258" stroke="#5b6b7d" stroke-width="1.4" fill="none" marker-end="url(#ar)"/><rect x="105" y="258" width="250" height="52" rx="8" fill="#14301f" stroke="#2e6b45"/><text x="230.0" y="280.5" text-anchor="middle" font-size="13" font-weight="600" fill="#e9edf2">Совпало, дерево разбора одно</text><text x="230.0" y="296.5" text-anchor="middle" font-size="11.5" font-weight="400" fill="#9aa7b4">формула выдаётся</text><rect x="645" y="258" width="250" height="52" rx="8" fill="#33161a" stroke="#7a2e28"/><text x="770.0" y="280.5" text-anchor="middle" font-size="13" font-weight="600" fill="#e9edf2">Расхождение или отказ разбора</text><text x="770.0" y="296.5" text-anchor="middle" font-size="11.5" font-weight="400" fill="#9aa7b4">выдача блокируется</text></svg></div>
+<div class="num"><div><b>495</b><span>сочетаний «случай — форма»</span></div><div><b>245</b><span>форма допускает</span></div><div><b>250</b><span>отклоняет с причиной</span></div><div><b>0</b><span>расхождений</span></div></div>
+<p>За время разработки обратная проверка нашла шесть дефектов, каждый из которых
+менял выдаваемую строку.</p></div></section><section class="slide" data-n="5"><div class="kicker">Однозначность</div><h2>Разбор неоднозначности: измерение, а не рассуждение</h2><div class="body">
+<p><b>Грамматическая однозначность.</b> Для каждой строки подсчитывается число
+деревьев разбора.</p>
+<div class="num"><div><b>0</b><span>своих строк, деревьев &gt; 1</span></div><div><b>0</b><span>примеров книги, деревьев &gt; 1</span></div></div>
+<p>Одна настоящая неоднозначность была внесена в грамматику и найдена этой
+проверкой: обозначение происхождения <code>mat</code> совпало с обозначением
+конституциональной аберрации, и одна строка получила два дерева. Устранено.</p>
+<p><b>Совпадение разных случаев.</b> Отдельная величина: доля случаев, которые
+форма печатает неотличимо от другого случая батареи.</p>
+<table class=""><thead><tr><th>Форма</th><th>Допустима в случаях</th><th>Доля совпадений</th></tr></thead><tbody><tr><td><code>abbrev</code></td><td>27</td><td>0,000</td></tr><tr><td><code>short</code></td><td>45</td><td>0,089</td></tr><tr><td><code>abbrev_range</code></td><td>27</td><td>0,148</td></tr><tr><td><code>short_range</code></td><td>45</td><td>0,178</td></tr><tr><td><code>mixed</code></td><td>16</td><td>0,000</td></tr><tr><td><code>karyotype</code></td><td>31</td><td>0,258</td></tr><tr><td><code>karyotype_mos</code></td><td>14</td><td>0,357</td></tr></tbody></table>
+</div></section><section class="slide" data-n="6"><div class="kicker">Цена формы</div><h2>Что теряется в каждой форме — с примерами</h2><div class="body">
+<ul>
+<li><b>Микрочиповые формы стирают механизм.</b> У образца NA02325 найдены три
+прироста дозы: Xq28 — 0,44 Мб, 16p13.3 — 3,50 Мб, 22q11.1q12.2 — 13,40 Мб.
+Дозовое описание этих трёх приростов и описание того же образца как носителя
+сверхчисленной производной хромосомы der(22)t(16;22) материнского происхождения
+дают одну и ту же микрочиповую строку, хотя риск повторения в этих случаях
+несопоставим.</li>
+<li><b>Диапазон копийности стирает долю мозаицизма.</b> Доли 0,20 и 0,35 обе дают
+<code>seq (16)×2~3</code>.</li>
+<li><b>Кариотипная строка стирает мозаицизм, зиготность и всё ниже предела
+бэндирования.</b> Нормальный профиль, полный пузырный занос и двуспермный занос
+дают одинаковое <code>46,XX</code>; нормальный мужской профиль и носитель делеции
+22q11.21 размером 2,96 Мб — одинаковое <code>46,XY</code>.</li>
+</ul>
+<p class="hl">Отсюда практический вывод: каноническая форма бланка — короткая
+система с координатами и сборкой; кариотипная строка приводится рядом как
+пояснительная, а не как основная.</p></div></section><section class="slide" data-n="7"><div class="kicker">Приёмка</div><h2>Совпадение с первоисточником побайтово</h2><div class="body">
+<p>Для 19 случаев ожидаемая строка напечатана в книге.
+Генератор воспроизводит их знак в знак.</p>
+<div class="num"><div><b>19 из 19</b><span>совпало побайтово</span></div></div>
+<p>Отдельно проверен разбор всех примеров книги: из
+905 извлечённых строк
+512 относятся к нужным главам,
+493 остаются после отсева обрывов переноса.</p>
+<table class=""><thead><tr><th>Итог разбора</th><th>Строк</th></tr></thead><tbody><tr><td>принято</td><td>385</td></tr><tr><td>отнесено к области вне задачи</td><td>73</td></tr><tr><td>не разобрано</td><td>35</td></tr></tbody></table>
+<p>Из не разобранных подавляющая часть — искажения распознавания, сверенные с
+изображениями страниц: латинская <code>g</code> на месте <code>q</code>,
+пробел на месте подчёркивания. Записями ISCN такие строки не являются ни при
+каком прочтении.</p></div></section><section class="slide" data-n="8"><div class="kicker">Находка</div><h2>В первоисточнике и в каталожных записях есть дефекты</h2><div class="body">
+<p>Инструмент проверяет, следует ли обозначение полосы из координат самой записи.
+Сплошная проверка примеров книги с координатами:</p>
+<div class="num"><div><b>124</b><span>обозначений проверено</span></div><div><b>118</b><span>совпадают точно</span></div><div><b>3</b><span>названы крупнее (допустимо)</span></div><div><b>3</b><span>расходятся по существу</span></div></div>
+<p>Пример 8.2.2xxiv книги объявляет сборку GRCh38, но позиция 69 172 132 лежит
+в GRCh38 в полосе 18q22.2, а 18q22.3 соответствует этой позиции в hg19.
+Обозначение полосы взято из одной сборки, координаты — из другой.</p>
+<p>То же в каталожной записи NA02325: участок обозначен как
+<code>22q11.1q11.21</code>, тогда как по заявленной сборке hg19 это
+<code>22q11.1q12.2</code> — занижение протяжённости на три подполосы.</p>
+<p class="hl">Вывод для практики: обозначения полос в записях, приходящих извне,
+следует пересчитывать из координат вместе с заявленной сборкой, а не принимать
+на веру.</p></div></section><section class="slide" data-n="9"><div class="kicker">Отклонение</div><h2>Корпус отклонения: ловится восемь ошибок из девяти</h2><div class="body">
+<p>Неверные строки взяты из таблицы 1 публикации Chebly 2025 — там для каждой
+задачи приведены и ошибочная запись, и исправленный эталон. В область задачи
+(конституциональный результат) попадают 9 строк.</p>
+<table class=""><thead><tr><th>Как обнаружено</th><th>Строк</th></tr></thead><tbody><tr><td>отвергнуто грамматикой</td><td>2</td></tr><tr><td>помечено проверкой соглашений с указанием пункта</td><td>6</td></tr><tr><td>не обнаружимо на уровне строки</td><td>1</td></tr></tbody></table>
+<p>Девятая ошибка — запятая внутри описания одной производной хромосомы:
+<code>46,XY,der(1)t(1;3)(p32;q21),dup(1)(q25q42)</code>. Запятая превращает описание
+одной производной хромосомы в описание двух независимых перестроек, и такое
+прочтение само по себе допустимо. Обнаружить её в строке нельзя ни одной
+проверкой.</p>
+<p class="ok">Генератор эту ошибку сделать не может: принадлежность перестроек
+одной производной хромосоме задана во входных данных, а не расстановкой запятых
+в тексте.</p>
+<p>Проверка соглашений на собственном выводе генератора не срабатывает ни разу:
+245 строк, нарушений уровня «ошибка» —
+0.</p></div></section><section class="slide" data-n="10"><div class="kicker">Наши образцы</div><h2>Три отработанных образца прогона</h2><div class="body">
+<p><b>NA00496</b> — мозаичная трисомия 8, доля 0,97.<br>
+<code>seq (8)×3[0.97]</code> · кариотипная форма <code>mos 47,XY,+8/46,XY</code><br>
+<span class="fmeta">сборка в строке отсутствует: координаты не приводятся, пункт 4.4.5c</span></p>
+<p><b>NA02325</b> — записан в двух вариантах, и это главный вывод по образцу.<br>
+Дозовый вариант: <code>seq[GRCh38] Xq28(154,890,328_155,335,092)×3,16p13.3(200,001_3,700,000)×3,22q11.1q12.2(17,100,001_30,500,000)×3</code><br>
+С установленным механизмом: <code>47,XX,+der(22)t(16;22)(p13.3;q11.21)mat</code><br>
+Смешанная форма: <code>seq[GRCh38] Xq28(154,890,328_155,335,092)×3,+der(22)t(16;22)(p13.3;q11.21)mat</code><br>
+В кариотипной строке два события выпадают, и инструмент перечисляет их отдельно:
+прирост на chrX размером 0,44 Мб ниже предела бэндирования, прирост на chr16
+объясняется той же производной хромосомой.</p>
+<p><b>NA13019</b> — одна X с потерей Xp и избытком Xq.<br>
+Дозовая запись: <code>seq[GRCh38] Xp22.33p11.21(2,900,001_56,900,000)×1,Xq11.1q28(62,800,001_155,700,000)×3[0.68]</code><br>
+Клональная запись: <code>mos 46,X,i(X)(q10)/45,X</code><br>
+<span class="fmeta">клоны заданы явно: по одной дозе они не восстанавливаются</span></p>
+</div></section><section class="slide" data-n="11"><div class="kicker">Отказы</div><h2>Три случая, когда инструмент отказывается выдать формулу</h2><div class="body">
+<p>Отказ с указанием причины — рабочее поведение, а не пробел. Каждый проверяется
+отдельным тестом.</p>
+<ol>
+<li><b>Механизм не наблюдался.</b> Дозовая потеря концевого участка 4p равно
+допускает делецию, кольцевую хромосому и несбалансированный продукт
+транслокации, поэтому <code>del(4)(p16.3p15.32)</code> по одной дозе не
+выдаётся (пункт 5.5.15c). Если лаборатория решает назвать механизм, он задаётся
+во входных данных явно, и решение фиксируется как заявленное оператором.</li>
+<li><b>Мозаицизм без счёта клеток.</b> Кариотипная запись мозаицизма опирается на
+счёт метафаз; при биопсии его нет. Доля выдаётся в квадратных скобках, как прямо
+предусмотрено пунктом 4.5.3n.</li>
+<li><b>Мозаицизм по половой хромосоме.</b> Нормальный клон по дозе не
+восстанавливается: <code>45,X/46,XX</code> и <code>45,X/46,XY</code> дают
+одинаковую дозу X. Форма отклоняется с требованием задать клоны явно.</li>
+</ol>
+<p class="hl">Третий отказ найден не рассуждением: собственный вывод генератора
+не прошёл его же проверку соглашений — строка <code>mos 45,X/46,X</code> не
+сходилась по числу хромосом.</p></div></section><section class="slide" data-n="12"><div class="kicker">Заключение</div><h2>Словесное описание порождается, а не пишется</h2><div class="body">
+<p>Формула однозначна, но нечитаема без подготовки, поэтому в заключении её
+сопровождает словесное описание. Оно не пишется от руки: порождается из того же
+набора событий, из которого построена формула, четырьмя слоями — что выявлено,
+клиническая значимость, ограничения, что можно сделать дальше.</p>
+<div class="num"><div><b>180</b><span>описаний проверено</span></div><div><b>45</b><span>случаев</span></div><div><b>4</b><span>профилей получателя</span></div><div><b>26</b><span>осей настройки стиля</span></div><div><b>0</b><span>расхождений обратной проверки</span></div></div>
+<p>Обратная проверка здесь двойная и обе половины идут от готового текста к
+данным: факты извлекаются из русского текста и сверяются с набором событий и,
+независимо, с фактами, разобранными из формулы грамматикой. Она нашла девять
+дефектов, которых проверка формулы поймать не могла: формула во всех случаях
+была верна. Самый тяжёлый — триплоидия описывалась словами «аберраций не
+выявлено», потому что плоидность выражена в формуле множителем, а не событием.</p>
+<p>Стиль задан данными, а не разветвлением в коде: профиль — это набор значений
+26 осей, и любую можно переключить поверх профиля.
+Категория значимости от профиля не зависит: значимость есть свойство находки,
+а не читателя.</p>
+</div></section><section class="slide" data-n="13"><div class="kicker">Практика</div><h2>Сверка с первоисточниками: 21 расхождение из 52 требований</h2><div class="body">
+<p>Требования к содержанию заключения выписаны из документов практики и сверены
+с нашей выдачей построчно. Каждая выдержка проверена на посимвольное совпадение
+с текстом первоисточника.</p>
+<div class="num"><div><b>6</b><span>документов затребовано</span></div><div><b>4</b><span>получено полными текстами</span></div><div><b>52</b><span>требований разобрано</span></div><div><b>18</b><span>соответствует</span></div><div><b>21</b><span>расходится</span></div><div><b>13</b><span>не покрыто</span></div></div>
+<p><b>Главное, что нашлось.</b> Оборот со словом «отрицательный» стоял в
+135 описаниях из 180,
+и наш собственный список запрещённых формулировок его не ловил — проверка
+пропускала нарушение того правила, которым обоснована сама. Исправлено: таких
+оборотов теперь 0.</p>
+<p>Добавлены выделенный вывод, повтор клинического вопроса, оговорка о том, что
+последствия переноса эмбриона с мозаичной находкой неизвестны, и заявление о
+неразглашении полового набора. Запрет на упоминание пренатальной диагностики
+сужен: первоисточник прямо допускает указание на необходимость подтверждения
+результата при наступившей беременности.</p>
+<p><b>Границы мозаицизма 0,20 и 0,80 не подтверждены ни одной выдержкой</b>:
+позиционные документы, откуда они могли быть взяты, закрыты платным доступом.
+В четырёх прочитанных документах классифицирующих границ нет вовсе, а решение о
+границе прямо назначено самой лаборатории. Поэтому границы — настройка, и
+приписывание их первоисточнику снято.</p>
+</div></section><section class="slide" data-n="14"><div class="kicker">Контроль входа</div><h2>Чужая запись: вердикт вместо исключения</h2><div class="body">
+<p>Проверки, построенные для собственной выдачи, к чужой записи неприменимы: своя
+строка всегда в области применения и всегда грамматична. Входной контроль
+добавляет приведение оформления, вердикт из 5 значений
+и замечания 3 уровней.</p>
+<div class="num"><div><b>29</b><span>верных записей в приёмке</span></div><div><b>2</b><span>ложных отказов до правок</span></div><div><b>0</b><span>ложных отказов после</span></div><div><b>33</b><span>неверных записей</span></div><div><b>5</b><span>пропущено после</span></div></div>
+<p>Ложный отказ на верной записи считается таким же дефектом, как пропуск
+неверной: проверку с ложными отказами вынуждены отключить. Причина отказов
+оказалась хуже ожидаемой: строка делилась на записи по точке, а точка стоит и
+внутри обозначения подполосы, поэтому правило счёта хромосом считало по обрубку
+строки — для любой кариотипной записи с подполосой.</p>
+<p>Пять оставшихся пропусков перечислены в наборе проверок явным списком, чтобы
+сокращение списка было видно, а расширение заметно. Порядок точек разрыва внутри
+плеча намеренно не проверяется: подтверждающей выдержки из стандарта нет, а
+вводить правило по памяти значит снова отвергать верные записи.</p>
+</div></section><section class="slide" data-n="15"><div class="kicker">Обозначения</div><h2>Справочник участков подчинён списку целей</h2><div class="body">
+<p>Обозначение критического участка в тексте заключения нельзя брать из памяти.
+Справочник построен из кураторского перечня дозовой чувствительности участков и
+даёт обозначение и уточнённые границы, но не задаёт, где вести поиск: цели
+задаёт список регионов частых клинически значимых нарушений.</p>
+<div class="num"><div><b>513</b><span>участков в перечне</span></div><div><b>78</b><span>отобрано в справочник</span></div><div><b>59</b><span>различных участков</span></div><div><b>74</b><span>меток списка ПГТ-А</span></div><div><b>52</b><span>из них с кураторским участком</span></div><div><b>4</b><span>расхождение границ вдвое и более</span></div></div>
+<p>Прежняя заготовка из семи областей, записанная при разработке по памяти,
+расходилась с кураторскими границами по всем семи, а по участку 1p36 — почти
+вдвое по протяжённости. Следствие не косметическое: утверждение о перекрытии
+выносится при покрытии участка не менее чем на девять десятых, поэтому
+завышенная протяжённость означает молчание там, где утверждение уместно.</p>
+<p>До подтверждения врачом построчно справочник в заключениях не применяется:
+обозначение из него попадает в текст, который подписывает врач.</p>
+</div></section><section class="slide" data-n="16"><div class="kicker">Дальше</div><h2>Что предлагается делать с этим</h2><div class="body">
+<ul>
+<li><b>В бланк результата</b> — каноническая форма (короткая система с координатами
+и сборкой) плюс кариотипная строка как пояснительная, с перечнем событий,
+которые в неё не попали.</li>
+<li><b>В приёмку записей извне</b> — подкоманда проверки: разбор, пересчёт полос
+из координат по заявленной сборке, перечень нарушенных пунктов. На каталожных
+записях двух образцов из трёх она уже нашла дефекты.</li>
+<li><b>В досье</b> — отчёт, реестр 64 пунктов,
+таблица форм, таблица результатов по 495 сочетаниям
+и набор из 786 проверок.</li>
+<li><b>Что осталось за границей</b> — обозначения неоплазии, вложенные
+производные хромосомы, толкование содержимого подробной системы. Отклоняются
+как принадлежащие другой области, а не толкуются наугад.</li>
+</ul>
+<p><b>Куда идти дальше:</b><br>
+<a href="index.html">stand.html</a> — стенд: сорок пять готовых случаев, сбор
+своего случая, разбор чужой записи, упражнение на десять случаев.<br>
+<a href="report.html">report.html</a> — отчёт: источник правил, конвенции,
+устройство обратной проверки, итоги, ограничения.<br>
+<a href="stand.html#case=NA13019-клоны">stand.html#case=NA13019-клоны</a> —
+стенд, открытый сразу на образце с изохромосомой Xq.</p>
+<p class="fmeta">Всё перечисленное опубликовано по адресу
+<a href="https://aepavlov-dev.github.io/ISCN-demo/">https://aepavlov-dev.github.io/ISCN-demo/</a></p></div></section>
+<div class="deckbar">
+  <button id="prev">←</button><button id="next">→</button>
+  <span id="ttl">Генератор формул ISCN 2024</span>
+  <a href="index.html">стенд</a><a href="report.html">отчёт</a><a href="verbal.html">описание</a>
+  <span class="pos"><span id="cur">1</span> / 16</span>
+</div>
+<script>
+const slides=[...document.querySelectorAll('.slide')];
+let i=0;
+function show(n){
+  i=Math.max(0,Math.min(slides.length-1,n));
+  slides.forEach((s,k)=>s.classList.toggle('active',k===i));
+  document.getElementById('cur').textContent=i+1;
+  document.getElementById('ttl').textContent=slides[i].querySelector('h2').textContent;
+  location.hash='#'+(i+1);
+}
+document.getElementById('prev').onclick=()=>show(i-1);
+document.getElementById('next').onclick=()=>show(i+1);
+document.addEventListener('keydown',e=>{
+  if(['ArrowRight','PageDown',' '].includes(e.key)) show(i+1);
+  if(['ArrowLeft','PageUp'].includes(e.key)) show(i-1);
+  if(e.key==='Home') show(0);
+  if(e.key==='End') show(slides.length-1);
+});
+show(parseInt(location.hash.slice(1))-1||0);
+</script>
+</body>
+</html>

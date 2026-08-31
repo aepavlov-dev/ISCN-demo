@@ -528,7 +528,20 @@ def describe_event(ev: IF.Event, bands: IF.CytobandTable, style: Style,
             "arm_word": forms["nom"], "arm_gen": forms["gen"],
             "arm_dat": forms["dat"], "cn": ev.copy_number}
 
-    if ev.scale == "chromosome":
+    if ev.scale == "chromosome" and ev.baseline != 2:
+        # Слова «трисомия» и «моносомия» называют абсолютное число копий и к
+        # половой хромосоме с одной ожидаемой копией не подходят: две копии X
+        # при наборе XY — это лишняя копия, а не трисомия. Поэтому копийность
+        # называется прямо, вместе с ожидаемой.
+        head = (f"{'прирост' if ev.direction == 'gain' else 'утрата'} копийности "
+                f"хромосомы {ev.chrom}: {ev.copy_number} "
+                f"{'копия' if ev.copy_number == 1 else 'копии'} "
+                f"при ожидаемой {ev.baseline}"
+                if ev.baseline == 1 else
+                f"копийность хромосомы {ev.chrom}: {ev.copy_number} "
+                f"при ожидаемых {ev.baseline}")
+        key = None
+    elif ev.scale == "chromosome":
         key = "gain_whole" if ev.direction == "gain" else "loss_whole"
     elif ev.scale == "arm":
         key = "gain_arm" if ev.direction == "gain" else "loss_arm"
@@ -536,7 +549,8 @@ def describe_event(ev: IF.Event, bands: IF.CytobandTable, style: Style,
         key = "nullisomy"
     else:
         key = "gain_seg" if ev.direction == "gain" else "loss_seg"
-    head = T[key].format(**subs)
+    if key is not None:
+        head = T[key].format(**subs)
 
     tail: List[str] = []
     if ev.scale != "chromosome" and ev.start is not None:
@@ -1043,7 +1057,10 @@ def check_text(text: str, case: IF.Case, bands: IF.CytobandTable,
     # направление события
     for ev in case.events:
         if ev.scale == "chromosome" and style.literal_layer:
-            want = ("трисом", "лишн", "три копии") if ev.direction == "gain" \
+            # «прирост/утрата копийности» — формулировка для базовой линии,
+            # отличной от двух копий (половая хромосома при XY)
+            want = ("трисом", "лишн", "три копии", "прирост копийности") \
+                if ev.direction == "gain" \
                 else ("моносом", "нехватк", "одна копия", "утрат")
             if not any(w in text.lower() for w in want):
                 problems.append(f"направление события на хромосоме {ev.chrom} "

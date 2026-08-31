@@ -306,6 +306,56 @@ def _profiles() -> dict:
                         for p, s in VB.PROFILES.items()}}
 
 
+def _describe_text(req: dict) -> dict:
+    """Словесное описание по произвольной записи.
+
+    Порядок жёсткий: сначала входной контроль, потом восстановление набора
+    событий, потом описание. Негодная запись не описывается, и запись, по
+    которой набор восстановить нельзя, тоже: описание пошло бы о другом
+    результате. Причина отказа возвращается дословно.
+    """
+    build = req.get("build", "GRCh38")
+    bands = BANDS[build]
+    text = req["text"]
+    verdict = IV.validate(text, bands)
+    out = {"итог_контроля": verdict["итог"],
+           "замечания_контроля": verdict.get("замечания", []),
+           "нормализована": verdict.get("нормализована")}
+    if verdict["итог"] not in ("годна", "годна с замечаниями"):
+        out["описание"] = None
+        out["отказ"] = ("запись не прошла входной контроль: "
+                        + verdict["итог"])
+        return out
+    try:
+        case = IF.case_from_text(verdict.get("нормализована") or text, bands,
+                                 sample=req.get("sample") or "запись извне",
+                                 sex_chromosomes=(req.get("sex") or None))
+    except IF.Irreconstructible as exc:
+        out["описание"] = None
+        out["отказ"] = exc.reason
+        out["подробности"] = exc.detail
+        return out
+    st = _style_from(req)
+    dl = req.get("detection_limit")
+    res = VB.verbalize(case, bands, st,
+                       detection_limit=(float(dl) if dl not in ("", None) else None),
+                       clinical_question=req.get("question") or None)
+    out["описание"] = {
+        "профиль": res["профиль"], "категория": res.get("категория"),
+        "разделы": {k: (v if isinstance(v, str) else list(v))
+                    for k, v in res["разделы"].items()},
+        "текст": res["текст"], "проверка": res["проверка"]}
+    out["восстановлено"] = {
+        "половой_набор": case.sex_chromosomes, "плоидность": case.ploidy,
+        "события": [{"хромосома": e.chrom, "копийность": e.copy_number,
+                     "базовая_линия": e.baseline,
+                     "начало": e.start, "конец": e.end,
+                     "доля": e.mosaic_fraction} for e in case.events],
+        "набор_назван_оператором": bool(req.get("sex")) and
+                                   case.sex_chromosomes == req.get("sex")}
+    return out
+
+
 def api(payload: str) -> str:
     """Единственная точка входа со страницы."""
     req = json.loads(payload) if isinstance(payload, str) else payload
@@ -328,6 +378,8 @@ def api(payload: str) -> str:
             data = _verbalize(req)
         elif action == "validate":
             data = _validate(req)
+        elif action == "describe_text":
+            data = _describe_text(req)
         elif action == "profiles":
             data = _profiles()
         elif action == "regions":

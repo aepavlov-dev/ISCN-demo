@@ -46,6 +46,7 @@ __all__ = [
     "Case", "Event", "Form", "FORMS", "RULES", "LOSS_MATRIX",
     "CytobandTable", "render", "render_all", "parse", "project",
     "roundtrip_check", "ambiguity_report", "validate_case", "from_bed",
+    "case_from_text", "Irreconstructible",
 ]
 
 TIMES = "\u00d7"          # multiplication sign, ISCN 4.4.3
@@ -598,17 +599,29 @@ def _sex_prefix_needed(case: Case, form: Form) -> bool:
     return case.sex_event_present() or not case.sex_disclosed is True and False
 
 
-def _sex_group(case: Case) -> str:
+def _sex_event_letters(case: Case) -> set:
+    """Буквы половых хромосом, по которым в наборе событий есть находка.
+
+    Такая буква не печатается ещё и в перечне набора: иначе одна и та же
+    хромосома называется дважды с разной копийностью («seq (X)×1,(X)×1»), и
+    запись перестаёт быть однозначной. Копийность половой хромосомы выражает
+    сам перечень (8.1.1b/c), поэтому находка печатается как его пункт.
+    """
+    return {e.chrom for e in case.events
+            if e.chrom in ("X", "Y") and e.scale == "chromosome"}
+
+
+def _sex_group(case: Case, exclude: Optional[set] = None) -> str:
     """Sex complement as an abbreviated-system group, e.g. (X)x2,(Y)x1."""
     sx = case.sex_chromosomes or ""
     if sx in ("", "U"):
         return ""
-    nx, ny = sx.count("X"), sx.count("Y")
+    skip = exclude or set()
     parts = []
-    if nx:
-        parts.append(f"(X){TIMES}{nx}")
-    if ny:
-        parts.append(f"(Y){TIMES}{ny}")
+    for letter in ("X", "Y"):
+        n = sx.count(letter)
+        if n and letter not in skip:
+            parts.append(f"({letter}){TIMES}{n}")
     return ",".join(parts)
 
 
@@ -620,10 +633,13 @@ def _sex_group(case: Case) -> str:
 def _render_abbrev(case: Case, bands: CytobandTable, form: Form) -> str:
     """4.7.2b: chromosome or arm level, no nucleotides, no build."""
     items: List[str] = []
+    sex_items: Dict[str, str] = {}
     if form.sex_policy == "always" and case.sex_chromosomes not in (None, "U"):
-        sg = _sex_group(case)
-        if sg:
-            items.append(sg)
+        skip = _sex_event_letters(case)
+        for letter in ("X", "Y"):
+            n = (case.sex_chromosomes or "").count(letter)
+            if n and letter not in skip:
+                sex_items[letter] = f"({letter}){TIMES}{n}"
     groups: Dict[Tuple, List[str]] = {}
     for e in sorted(case.events, key=order_key_microarray):
         if e.scale == "chromosome":
@@ -637,7 +653,13 @@ def _render_abbrev(case: Case, bands: CytobandTable, form: Form) -> str:
         key = (_copy_spec(e), _suffixes(e))
         groups.setdefault(key, []).append(token)
     for (cs, sfx), toks in groups.items():
-        items.append(f"({','.join(toks)}){cs}{sfx}")
+        item = f"({','.join(toks)}){cs}{sfx}"
+        if len(toks) == 1 and toks[0] in ("X", "Y"):
+            sex_items[toks[0]] = item          # находка по половой хромосоме
+        else:
+            items.append(item)
+    # 8.1.1b: половые хромосомы называются первыми, X перед Y
+    items = [sex_items[l] for l in ("X", "Y") if l in sex_items] + items
     cht = "cht" if case.chromatid else ""
     return _tech_token(case, coords=False) + cht + ",".join(items)
 
@@ -646,7 +668,7 @@ def _render_short(case: Case, bands: CytobandTable, form: Form) -> str:
     """4.7.2c: bands, nucleotides with thousands separators, copy number."""
     items: List[str] = []
     if form.sex_policy == "always":
-        sg = _sex_group(case)
+        sg = _sex_group(case, _sex_event_letters(case))
         if sg:
             items.append(sg)
     for e in sorted(case.events, key=order_key_microarray):
@@ -1936,9 +1958,10 @@ def project(case: Case, form: str, bands: CytobandTable) -> frozenset:
                         e.inheritance if keep_attr["parental_origin"] else None,
                         e.zygosity if keep_attr["zygosity"] else None))
         if keep_attr["sex_complement"] and case.sex_chromosomes not in (None, "U"):
+            skip = _sex_event_letters(case)
             for letter in ("X", "Y"):
                 n = case.sex_chromosomes.count(letter)
-                if n:
+                if n and letter not in skip:
                     out.append(("cn", letter, None, None, None, None, n, None,
                                 None, None, None))
 
@@ -2037,6 +2060,195 @@ def roundtrip_check(case: Case, form: str, bands: CytobandTable) -> Dict[str, An
     except Exception as exc:                                   # pragma: no cover
         res["derivations"] = f"error: {exc}"
     return res
+
+
+# ---------------------------------------------------------------------------
+# Обратный ход: набор событий по готовой записи
+# ---------------------------------------------------------------------------
+
+
+class Irreconstructible(Exception):
+    """Набор событий по записи восстановить нельзя — с указанием причины."""
+
+    def __init__(self, reason: str, detail: str = "") -> None:
+        super().__init__(reason)
+        self.reason = reason
+        self.detail = detail
+
+
+#: Формы, в которых проверяется воспроизводимость записи по восстановленному
+#: набору. Порядок значения не имеет: достаточно совпадения хотя бы с одной.
+_REBUILD_FORMS = ("short", "abbrev_sex", "abbrev", "karyotype", "extended")
+
+
+def case_from_text(text: str, bands: "CytobandTable", *,
+                   sample: str = "запись",
+                   sex_chromosomes: Optional[str] = None) -> Case:
+    """Восстановить набор событий по готовой записи ISCN.
+
+    Зачем. Словесное описание порождается из набора событий, а не из строки.
+    Чтобы описать чужую запись, набор нужно восстановить — и убедиться, что
+    восстановлен именно он: по восстановленному набору запись выдаётся заново
+    и сверяется с исходной по фактам. При расхождении описание не выдаётся:
+    иначе врач получил бы текст о другом результате.
+
+    Что не восстанавливается и почему:
+
+    * структурные перестройки (``del``, ``t``, ``der`` и прочие) — механизм в
+      строке есть, но словесный слой описывает копийность, и выдать по нему
+      описание перестройки значило бы умолчать о её сути;
+    * несколько клеточных линий (``mos``, ``chi``) — доли линий в строке
+      заданы числом клеток, а не долей аберрации, и приравнивать одно к
+      другому нельзя;
+    * полярные тельца (``cht``) — счёт хроматид, а не копий.
+
+    ``sex_chromosomes`` — половой набор, названный оператором, когда в записи
+    его нет: без него направление изменения по X или Y не определено (одна
+    копия при XY есть норма, при XX — утрата). Это утверждение оператора, а не
+    сведение из строки.
+    """
+    parsed = parse(text)
+    facts = parsed["facts"]
+    meta = parsed["meta"]
+    kinds = {f[0] for f in facts}
+
+    if "chain" in kinds:
+        raise Irreconstructible(
+            "запись содержит структурную перестройку: словесное описание "
+            "порождается по копийности и о механизме перестройки умолчало бы")
+    if meta.get("clone_prefix") or len(meta.get("clones") or []) > 1:
+        raise Irreconstructible(
+            "запись содержит несколько клеточных линий: в строке заданы числа "
+            "клеток, а описание требует доли аберрации")
+    if meta.get("chromatid"):
+        raise Irreconstructible(
+            "запись полярного тельца: счёт хроматид, а не копий")
+    if int(meta.get("lines") or 0) > 1:
+        raise Irreconstructible("в строке больше одной записи")
+
+    ploidy = 2
+    complement: Dict[str, int] = {}
+    events: List[Event] = []
+    declared_sex: Optional[str] = None
+
+    for f in facts:
+        kind = f[0]
+        if kind == "sex":
+            declared_sex = str(f[1])
+        elif kind == "cnrange_group":
+            _, first, last, cn, frac, zyg = f[:6]
+            if (first, last) == ("1", "22"):
+                ploidy = int(cn)                      # (1–22)×3 — триплоидия
+            else:
+                raise Irreconstructible(
+                    f"группа хромосом {first}–{last} не восстанавливается: "
+                    "поодиночке события не заданы")
+        elif kind == "cn":
+            (_, chrom, band, start, end, flanks, cn, cnrange, frac,
+             inh, zyg) = f[:11]
+            plain_sex = (chrom in ("X", "Y") and band is None and start is None
+                         and not frac and not inh and not zyg and not cnrange)
+            if plain_sex and sex_chromosomes and \
+                    int(cn) != sex_chromosomes.count(str(chrom)):
+                # Оператор назвал набор, а запись даёт другую копийность этой
+                # буквы: значит это находка относительно названного набора, а
+                # не перечень набора.
+                events.append(Event(chrom=str(chrom), scale="chromosome",
+                                    copy_number=int(cn),
+                                    baseline=sex_chromosomes.count(str(chrom))))
+                continue
+            if plain_sex:
+                # Половые хромосомы в сокращённой системе перечисляются как
+                # набор (8.1.1b), а не как событие: XXX означает набор XXX.
+                complement[chrom] = complement.get(chrom, 0) + int(cn)
+                continue
+            events.append(Event(
+                chrom=str(chrom), copy_number=int(cn) if cn is not None else None,
+                copy_number_range=(tuple(cnrange) if cnrange else None),
+                start=start, end=end,
+                scale=("segment" if (start is not None or band) else "chromosome"),
+                flank_left=(flanks[0] if flanks else None),
+                flank_right=(flanks[1] if flanks and len(flanks) > 1 else None),
+                mosaic_fraction=(float(frac) if frac and frac != "?"
+                                 and "~" not in str(frac) else None),
+                mosaic_fraction_range=(tuple(float(x) for x in str(frac).split("~"))
+                                       if frac and "~" in str(frac) else None),
+                mosaic_fraction_unknown=(frac == "?"),
+                inheritance=(str(inh) if inh else None),
+                zygosity=(str(zyg) if zyg else None)))
+        elif kind == "num":
+            _, chrom, sign, _line = f[:4]
+            base = 1 if chrom in ("X", "Y") and declared_sex == "XY" else 2
+            events.append(Event(chrom=str(chrom), scale="chromosome",
+                                baseline=base,
+                                copy_number=base + (1 if sign == "+" else -1)))
+        elif kind == "count":
+            continue
+        else:
+            raise Irreconstructible(f"вид сведений «{kind}» не восстанавливается")
+
+    sex_events = [e for e in events if e.chrom in ("X", "Y")]
+    if sex_events and declared_sex is None and not complement and sex_chromosomes:
+        # набор в записи не заявлен, но назван оператором: это его утверждение,
+        # а не сведение из строки, и в описании помечается как заявленное
+        declared_sex = sex_chromosomes
+    if sex_events and declared_sex is None and not complement:
+        raise Irreconstructible(
+            "находка по половой хромосоме при незаявленном наборе: базовую "
+            "линию (одна копия при XY, две при XX) установить нельзя, а без "
+            "неё направление изменения не определено")
+    sex = declared_sex
+    if sex is None and complement:
+        sex = "".join(letter * complement.get(letter, 0) for letter in ("X", "Y"))
+    if sex is None and sex_chromosomes:
+        sex = sex_chromosomes
+    for ev in events:                       # базовая линия по половому набору
+        if ev.chrom in ("X", "Y"):
+            ev.baseline = (sex or "").count(ev.chrom) or 2
+        else:
+            ev.baseline = ploidy
+
+    case = Case(sample=sample, events=events, ploidy=ploidy,
+                sex_chromosomes=sex, sex_disclosed=sex is not None,
+                assembly=(meta.get("build") or "GRCh38"),
+                technique=(meta.get("technique") or "seq"))
+
+    # Воспроизводимость: по восстановленному набору запись должна выдаваться
+    # заново с тем же составом фактов хотя бы в одной форме.
+    best = None
+    for form in _REBUILD_FORMS:
+        try:
+            again = parse(render(case, form, bands))["facts"]
+        except Exception:                                    # noqa: BLE001
+            continue
+        if again == facts:
+            return case
+        # Допуск: сокращённая запись вправе не перечислять эуплоидные аутосомы
+        # («seq (X)×3»), а выданная заново их называет группой (1–22)×n. Это
+        # не расхождение по находкам: добавляется только заявление о том, что
+        # остальные хромосомы в норме.
+        diff = again ^ facts
+        def _tolerable(f) -> bool:
+            if f[0] == "cnrange_group" and f[3] == case.ploidy:
+                return True                      # эуплоидные аутосомы названы
+            # перечень набора, названного оператором: в строке его не было,
+            # в выданной заново записи он появился — это утверждение оператора
+            return (f[0] == "cn" and f[1] in ("X", "Y") and f[3] is None
+                    and f[6] == (case.sex_chromosomes or "").count(str(f[1])))
+        if diff and all(_tolerable(f) for f in diff):
+            return case
+        if best is None or len(again ^ facts) < len(best[1] ^ facts):
+            best = (form, again)
+    detail = ""
+    if best is not None:
+        form, again = best
+        detail = json.dumps({"форма": form,
+                             "нет в выданной заново": sorted(map(str, facts - again)),
+                             "лишнее": sorted(map(str, again - facts))},
+                            ensure_ascii=False)
+    raise Irreconstructible(
+        "по восстановленному набору событий запись не воспроизводится, "
+        "поэтому описание не выдаётся", detail)
 
 
 # ---------------------------------------------------------------------------
