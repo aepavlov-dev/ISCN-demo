@@ -3,13 +3,13 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Стенд: генератор формул ISCN 2024</title>
+<title>Стенд: запись ISCN 2024 и заключение врача-генетика</title>
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body class="stand">
 
 <header>
-  <h1>Генератор формул ISCN 2024 — демонстрационный стенд</h1>
+  <h1>Запись ISCN 2024 и словесное описание для заключения — демонстрационный стенд</h1>
   <nav>
     <a href="index.html">Слайды</a>
     <a href="report.html">Отчёт</a>
@@ -24,7 +24,10 @@
 <div class="tabs" role="tablist">
   <button class="tab active" data-panel="p-cases">Примеры</button>
   <button class="tab" data-panel="p-own">Свой случай</button>
+  <button class="tab" data-panel="p-verb">Заключение</button>
+  <button class="tab" data-panel="p-valid">Контроль записи</button>
   <button class="tab" data-panel="p-audit">Разбор чужой записи</button>
+  <button class="tab" data-panel="p-reg">Справочник участков</button>
   <button class="tab" data-panel="p-ex">Упражнение</button>
   <button class="tab" data-panel="p-forms">Формы и потери</button>
 </div>
@@ -95,6 +98,69 @@
     </div>
     <div class="col-wide"><div id="ownOut"></div></div>
   </div>
+</section>
+
+
+<!-- ------------------------------------------------------------------ -->
+<section id="p-verb" class="panel">
+  <p class="lead">Словесное описание порождается из того же набора событий, из которого
+  построена формула, и проверяется обратным извлечением фактов из готового текста.
+  Профиль задаёт словарь и состав разделов; отдельные оси можно переключить поверх профиля.</p>
+  <div class="split">
+    <div class="col-narrow">
+      <label for="vbCase">Случай</label>
+      <select id="vbCase" size="12"></select>
+      <label for="vbProfile">Профиль</label>
+      <select id="vbProfile"></select>
+      <label for="vbQuestion">Клинический вопрос</label>
+      <input id="vbQuestion" type="text" value="ПГТ-А: числовые аберрации хромосом у эмбриона">
+      <label for="vbLimit">Предел заявления (доля клеток)</label>
+      <input id="vbLimit" type="text" value="0,06">
+      <label for="vbThresholds">Границы мозаицизма</label>
+      <input id="vbThresholds" type="text" value="0,20; 0,50; 0,80">
+      <fieldset id="vbFlags">
+        <legend>Оси настройки</legend>
+      </fieldset>
+      <button id="vbRun" class="primary">Собрать описание</button>
+    </div>
+    <div class="col-wide">
+      <div id="vbVerdict" class="verdict"></div>
+      <div id="vbOut"></div>
+      <h3>Обратная проверка текста</h3>
+      <div id="vbCheck"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------------ -->
+<section id="p-valid" class="panel">
+  <p class="lead">Входной контроль записи, пришедшей извне: приведение оформления,
+  вердикт из пяти значений и замечания трёх уровней. Ложный отказ на верной записи
+  считается таким же дефектом, как пропуск неверной.</p>
+  <label for="ivText">Запись ISCN</label>
+  <input id="ivText" type="text" size="90" value="47,XX,t(9;22)(q34;q11.2),+der(22)t(9;22)">
+  <div class="row">
+    <button id="ivRun" class="primary">Проверить</button>
+    <span class="hint">Примеры: <a href="#" class="ivEx">46,XX,+21</a> ·
+      <a href="#" class="ivEx">seq[GRCh38] 21q22.3(46 000 000_45 000 000)×1</a> ·
+      <a href="#" class="ivEx">SEQ[GRCh38] 21q22.3(1_46709983)x3</a> ·
+      <a href="#" class="ivEx">43~46,XX,-7,+8[cp4]</a></span>
+  </div>
+  <div id="ivVerdict" class="verdict"></div>
+  <div id="ivOut"></div>
+</section>
+
+<!-- ------------------------------------------------------------------ -->
+<section id="p-reg" class="panel">
+  <p class="lead">Справочник критических участков построен из кураторского перечня дозовой
+  чувствительности и подчинён списку целей проекта: он даёт обозначение и уточнённые
+  границы, но не задаёт, где вести поиск. До подтверждения врачом построчно в заключениях
+  не применяется.</p>
+  <div class="row">
+    <input id="regFilter" type="text" placeholder="фильтр: цитобенд, обозначение, хромосома">
+    <span id="regCount" class="hint"></span>
+  </div>
+  <div id="regOut"></div>
 </section>
 
 <!-- ------------------------------------------------------------------ -->

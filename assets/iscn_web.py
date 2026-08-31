@@ -12,10 +12,13 @@ import os
 from typing import Dict
 
 import iscn_formula as IF
+import iscn_validate as IV
+import iscn_verbalize as VB
 
 BANDS = {}
 CASES = []
 EXERCISE = []
+REGIONS = {}          # справочник критических участков, если файл рядом с сайтом
 
 RT_RU = {
     "ok": "разобрано обратно, совпало",
@@ -36,8 +39,8 @@ LOSS_RU = {
 
 
 def boot(assets: str = ".") -> dict:
-    """Загрузить таблицы цитобендов, примеры и упражнение."""
-    global CASES, EXERCISE
+    """Загрузить таблицы цитобендов, примеры, упражнение и справочник участков."""
+    global CASES, EXERCISE, REGIONS
     for build, fname in (("GRCh38", "cytoBand_hg38.txt"), ("hg19", "cytoBand_hg19.txt")):
         path = os.path.join(assets, fname)
         BANDS[build] = IF.CytobandTable(path, build=build)
@@ -45,8 +48,15 @@ def boot(assets: str = ".") -> dict:
         CASES = json.load(fh)
     with open(os.path.join(assets, "exercise.json")) as fh:
         EXERCISE = json.load(fh)
+    # справочник критических участков: если файла рядом нет, страница работает
+    # на встроенном запасе модуля, о чём и сообщает
+    path = os.path.join(assets, "critical_regions_v1.csv")
+    if os.path.exists(path):
+        REGIONS = VB.load_regions(path)
     return {"builds": sorted(BANDS), "cases": len(CASES), "forms": len(IF.FORMS),
-            "rules": len(IF.RULES), "exercise": len(EXERCISE)}
+            "rules": len(IF.RULES), "exercise": len(EXERCISE),
+            "profiles": len(VB.PROFILES), "regions": len(REGIONS),
+            "verdicts": list(IV.VERDICTS)}
 
 
 # ---------------------------------------------------------------------------
@@ -198,6 +208,104 @@ def _exercise_check(key, text, build="GRCh38"):
     return out
 
 
+
+
+# ---------------------------------------------------------------------------
+# Словесное описание и входной контроль
+# ---------------------------------------------------------------------------
+
+STYLE_FIELDS_RU = {
+    "include_formula": "приводить формулу", "formula_form": "форма формулы",
+    "literal_layer": "слой расшифровки", "significance_layer": "слой значимости",
+    "limits_layer": "слой ограничений", "next_steps_layer": "слой возможностей",
+    "term_register": "терминологический регистр", "name_syndromes": "называть синдромы",
+    "region_overlap": "перекрытие критических участков", "mosaic_policy": "запись мозаицизма",
+    "mosaic_uncertainty": "неопределённость доли", "mosaic_thresholds": "границы мозаицизма",
+    "sex_policy": "раскрытие полового набора", "coordinates": "координаты в тексте",
+    "sizes": "размеры событий", "decimal_comma": "десятичная запятая",
+    "bullet_layers": "разделы перечнем", "max_sentences": "предел пояснений",
+    "heading_prefix": "приставка заголовка", "counselling_note": "напоминание о консультировании",
+    "audience": "получатель", "highlight_conclusion": "выделять вывод",
+    "restate_question": "повторять клинический вопрос",
+    "transfer_guidance": "указание о пригодности к переносу",
+}
+
+
+def _style_from(req: dict) -> "VB.Style":
+    """Профиль плюс точечные правки полей, пришедшие со страницы."""
+    st = VB.PROFILES[req.get("profile", "генетик")]
+    over = req.get("style") or {}
+    fixed = {}
+    for k, v in over.items():
+        if not hasattr(st, k):
+            continue
+        cur = getattr(st, k)
+        if isinstance(cur, bool):
+            fixed[k] = bool(v)
+        elif isinstance(cur, tuple):
+            if isinstance(v, str):
+                # при десятичной запятой разделителем служит точка с запятой
+                # или пробел: делить по запятой нельзя — «0,10;0,30» распалось
+                # бы на четыре величины
+                import re as _re
+                parts = [x for x in _re.split(r"[;\s]+", v) if x.strip()]
+                v = parts if len(parts) > 1 else [x for x in v.split(",") if x.strip()]
+            fixed[k] = tuple(float(str(x).replace(",", ".")) for x in v)
+        elif isinstance(cur, int) and not isinstance(cur, bool):
+            fixed[k] = None if v in ("", None) else int(v)
+        elif isinstance(cur, float):
+            fixed[k] = float(str(v).replace(",", "."))
+        else:
+            fixed[k] = v
+    return st.with_(**fixed) if fixed else st
+
+
+def _verbalize(req: dict) -> dict:
+    """Описание по набору событий: разделы, текст, итог обратной проверки."""
+    build = req.get("build", "GRCh38")
+    bands = BANDS[build]
+    case = (next(c for c in CASES if c["key"] == req["key"])["case"]
+            if req.get("key") else req["case"])
+    if isinstance(case, dict):
+        case = IF.case_from_dict(case)
+    st = _style_from(req)
+    dl = req.get("detection_limit")
+    res = VB.verbalize(case, bands, st,
+                       detection_limit=(float(dl) if dl not in ("", None) else None),
+                       clinical_question=req.get("question") or None,
+                       transfer_note=req.get("transfer") or None)
+    if REGIONS:
+        res["участков_в_справочнике"] = len(REGIONS)
+    return {
+        "профиль": res["профиль"], "категория": res.get("категория"),
+        "разделы": {k: (v if isinstance(v, str) else list(v))
+                    for k, v in res["разделы"].items()},
+        "текст": res["текст"], "проверка": res["проверка"],
+        "запрещённые": [msg for pat, msg in VB.FORBIDDEN
+                        if __import__("re").search(pat, res["текст"], __import__("re").I)],
+    }
+
+
+def _validate(req: dict) -> dict:
+    """Входной контроль чужой записи: вердикт, замечания, нормализованный вид."""
+    v = IV.validate(req["text"], BANDS[req.get("build", "GRCh38")])
+    return {"итог": v["итог"], "нормализована": v.get("нормализована"),
+            "замены_оформления": v.get("замены_оформления", []),
+            "по_уровням": v.get("по_уровням", {}),
+            "деревьев_разбора": v.get("деревьев_разбора"),
+            "замечания": v.get("замечания", [])}
+
+
+def _profiles() -> dict:
+    """Профили и значения всех осей настройки — для таблицы на странице."""
+    import dataclasses as dc
+    names = [f.name for f in dc.fields(VB.Style) if f.name != "name"]
+    return {"поля": [{"имя": n, "русское": STYLE_FIELDS_RU.get(n, n)} for n in names],
+            "профили": {p: {n: (list(getattr(s, n)) if isinstance(getattr(s, n), tuple)
+                               else getattr(s, n)) for n in names}
+                        for p, s in VB.PROFILES.items()}}
+
+
 def api(payload: str) -> str:
     """Единственная точка входа со страницы."""
     req = json.loads(payload) if isinstance(payload, str) else payload
@@ -216,6 +324,17 @@ def api(payload: str) -> str:
             data["description"] = case["description"]
         elif action == "audit":
             data = _audit(req["text"], req.get("build", "GRCh38"))
+        elif action == "verbalize":
+            data = _verbalize(req)
+        elif action == "validate":
+            data = _validate(req)
+        elif action == "profiles":
+            data = _profiles()
+        elif action == "regions":
+            data = {"участков": len(REGIONS),
+                    "строки": [{"хромосома": k[0], "начало": k[1], "конец": k[2],
+                                "направление": k[3], "обозначение": v}
+                               for k, v in sorted(REGIONS.items())]}
         elif action == "exercise":
             data = [{"key": e["key"], "description": e["description"]}
                     for e in EXERCISE]

@@ -18,11 +18,13 @@ from iscn_formula import Case, Clone, Event, from_bed
 # ---------------------------------------------------------------------------
 
 REAL = [
-    ("NA00496", "Мозаичная трисомия 8, доля 0,97 (мужской образец)",
+    ("NA00496", "Мозаичная трисомия 8, доля 0,951 (мужской образец)",
      Case(sample="NA00496", technique="seq", sex_chromosomes="XY",
           events=[Event(chrom="8", copy_number=3, scale="chromosome",
-                        mosaic_fraction=0.97,
-                        label="chr8 полностью, z=+63, копийность 2,94")])),
+                        mosaic_fraction=0.95,
+                        label="chr8 500 000-145 000 000, CN=3, копийность "
+                              "2,951 (2,946-2,957), доля клеток 0,951 "
+                              "(0,946-0,957) — из pgt_report_NA00496_filled.md")])),
 
     ("NA02325-доза", "Три прироста дозы, механизм не установлен",
      Case(sample="NA02325", technique="seq", sex_chromosomes="XX",

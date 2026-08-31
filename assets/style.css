@@ -169,3 +169,29 @@ body.doc blockquote{margin:1rem 0;padding:.6rem .9rem;background:var(--accbg);
   body.doc{max-width:none}
   .slide{display:block;min-height:auto;page-break-after:always}
 }
+
+/* --- вкладки стенда, добавленные для заключения и контроля записи --- */
+.verdict{margin:.6rem 0;padding:.5rem .7rem;border-radius:6px;font-weight:600;
+         border:1px solid var(--line);background:var(--card)}
+.verdict.good{border-color:var(--ok);color:var(--ok)}
+.verdict.warn{border-color:var(--warn);color:var(--warn)}
+.verdict.bad{border-color:var(--bad);color:var(--bad)}
+.verdict.info{border-color:var(--line);color:var(--mute)}
+.col-wide{flex:1 1 62%;min-width:0}
+.col-narrow input[type=text]{width:100%;font-family:var(--mono);font-size:.8rem;
+         padding:.25rem .35rem;margin-bottom:.4rem}
+.col-narrow label{display:block;margin:.5rem 0 .15rem;font-size:.78rem;color:var(--mute)}
+fieldset#vbFlags{border:1px solid var(--line);border-radius:6px;margin:.5rem 0;padding:.4rem .6rem}
+fieldset#vbFlags legend{font-size:.76rem;color:var(--mute);padding:0 .3rem}
+label.check{display:block;font-size:.78rem;color:var(--ink);margin:.12rem 0}
+label.check input{margin-right:.35rem}
+button.primary{margin-top:.5rem;padding:.4rem .8rem;border-radius:6px;cursor:pointer;
+         border:1px solid var(--accent);background:var(--accent);color:#fff;font-weight:600}
+button.primary:hover{filter:brightness(1.08)}
+pre.formula{font-family:var(--mono);font-size:.86rem;background:var(--card);
+         border:1px solid var(--line);border-radius:6px;padding:.5rem .6rem;
+         overflow-x:auto;white-space:pre-wrap;word-break:break-all}
+#p-verb ul,#p-reg ul{margin:.3rem 0 .6rem 1.1rem}
+#p-verb li{margin:.16rem 0}
+#regOut table,#ivOut table{width:100%}
+#regFilter{font-family:var(--mono);font-size:.8rem;padding:.25rem .4rem;min-width:22rem}

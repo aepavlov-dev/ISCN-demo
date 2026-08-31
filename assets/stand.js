@@ -8,9 +8,10 @@
  */
 const PYODIDE_VERSION = "314.0.6";   // сверено с перечнем версий jsDelivr 31.08.2026
 const LARK_WHEEL = "assets/lark-1.3.1-py3-none-any.whl";
-const PY_FILES = ["iscn_formula.py", "iscn_cases.py", "iscn_web.py"];
+const PY_FILES = ["iscn_formula.py", "iscn_cases.py", "iscn_verbalize.py",
+                  "iscn_validate.py", "iscn_web.py"];
 const DATA_FILES = ["cytoBand_hg38.txt", "cytoBand_hg19.txt", "cases.json",
-                    "exercise.json"];
+                    "exercise.json", "critical_regions_v1.csv"];
 
 let pyApi = null;
 let STATS = null;
@@ -96,6 +97,9 @@ iscn_web.boot("/home/pyodide")
     initAudit();
     await initExercise();
     await initForms();
+  await initVerbalize();
+  await initValidate();
+  await initRegions();
   } catch (err) {
     $("#bootbar").hidden = true;
     $("#boot").textContent = "";
@@ -463,3 +467,181 @@ async function initForms() {
 }
 
 boot();
+
+/* ------------------------------------------------------------------ */
+/* Заключение: словесное описание в профилях                           */
+/* ------------------------------------------------------------------ */
+
+const VB_FLAGS = ["highlight_conclusion", "restate_question", "transfer_guidance",
+                  "region_overlap", "name_syndromes", "mosaic_uncertainty",
+                  "coordinates", "sizes", "bullet_layers", "counselling_note"];
+
+async function initVerbalize() {
+  const cases = await call({action: "cases"});
+  const sel = el("vbCase");
+  const groups = {};
+  cases.forEach(c => { (groups[c.group] = groups[c.group] || []).push(c); });
+  Object.keys(groups).forEach(g => {
+    const og = document.createElement("optgroup");
+    og.label = g;
+    groups[g].forEach(c => {
+      const o = document.createElement("option");
+      o.value = c.key;
+      o.textContent = c.key + " — " + c.description;
+      og.appendChild(o);
+    });
+    sel.appendChild(og);
+  });
+  sel.selectedIndex = 0;
+
+  const prof = await call({action: "profiles"});
+  const ps = el("vbProfile");
+  Object.keys(prof["профили"]).forEach(p => {
+    const o = document.createElement("option");
+    o.value = p; o.textContent = p;
+    ps.appendChild(o);
+  });
+  ps.value = "генетик";
+
+  const fs = el("vbFlags");
+  VB_FLAGS.forEach(name => {
+    const meta = prof["поля"].find(f => f["имя"] === name);
+    const id = "vbf_" + name;
+    const lab = document.createElement("label");
+    lab.className = "check";
+    lab.innerHTML = '<input type="checkbox" id="' + id + '"> ' +
+                    (meta ? meta["русское"] : name);
+    fs.appendChild(lab);
+  });
+
+  function syncFlags() {
+    const vals = prof["профили"][ps.value] || {};
+    VB_FLAGS.forEach(name => {
+      const box = el("vbf_" + name);
+      if (box) box.checked = !!vals[name];
+    });
+    const th = vals["mosaic_thresholds"];
+    if (th) el("vbThresholds").value = th.map(x => String(x).replace(".", ",")).join("; ");
+  }
+  ps.addEventListener("change", syncFlags);
+  syncFlags();
+
+  async function run() {
+    const style = {mosaic_thresholds: el("vbThresholds").value};
+    VB_FLAGS.forEach(name => {
+      const box = el("vbf_" + name);
+      if (box) style[name] = box.checked;
+    });
+    const res = await call({
+      action: "verbalize", key: sel.value, profile: ps.value, style: style,
+      question: el("vbQuestion").value,
+      detection_limit: el("vbLimit").value.replace(",", ".")
+    });
+    if (res && res.error) {
+      el("vbVerdict").className = "verdict bad";
+      el("vbVerdict").textContent = "ошибка настройки: " + res.error;
+      el("vbOut").innerHTML = ""; el("vbCheck").innerHTML = "";
+      return;
+    }
+    const cat = res["категория"] || "—";
+    el("vbVerdict").className = "verdict " +
+      (res["проверка"]["итог"] === "ок" ? "good" : "bad");
+    el("vbVerdict").textContent = "категория значимости: " + cat +
+      " · обратная проверка текста: " + res["проверка"]["итог"] +
+      (res["запрещённые"].length
+        ? " · запрещённых формулировок: " + res["запрещённые"].length : "");
+    const order = ["вопрос", "вывод", "формула", "расшифровка", "значимость",
+                   "ограничения", "пригодность", "что_дальше"];
+    const names = {"вопрос": "Клинический вопрос", "вывод": "Вывод",
+                   "формула": "Запись по ISCN 2024", "расшифровка": "Что выявлено",
+                   "значимость": "Клиническая значимость", "ограничения": "Ограничения",
+                   "пригодность": "Пригодность к переносу",
+                   "что_дальше": "Что можно сделать дальше"};
+    let html = "";
+    order.forEach(k => {
+      const body = res["разделы"][k];
+      if (!body) return;
+      html += "<h3>" + names[k] + "</h3>";
+      if (typeof body === "string") html += "<pre class=\"formula\">" + body + "</pre>";
+      else html += "<ul>" + body.map(s => "<li>" + s + "</li>").join("") + "</ul>";
+    });
+    el("vbOut").innerHTML = html;
+    const chk = res["проверка"];
+    const rows = Object.keys(chk).filter(k => k !== "итог").map(k =>
+      [k, Array.isArray(chk[k]) ? (chk[k].join(", ") || "—") : String(chk[k])]);
+    el("vbCheck").innerHTML = "<table class=\"grid\"><tbody>" +
+      rows.map(r => "<tr><th>" + r[0] + "</th><td>" + r[1] + "</td></tr>").join("") +
+      "</tbody></table>";
+  }
+  el("vbRun").addEventListener("click", run);
+  sel.addEventListener("change", run);
+  await run();
+}
+
+/* ------------------------------------------------------------------ */
+/* Контроль записи                                                     */
+/* ------------------------------------------------------------------ */
+
+const IV_CLS = {"годна": "good", "годна с замечаниями": "warn",
+                "требует решения": "warn", "негодна": "bad",
+                "вне области применения": "info"};
+
+async function initValidate() {
+  async function run() {
+    const res = await call({action: "validate", text: el("ivText").value});
+    el("ivVerdict").className = "verdict " + (IV_CLS[res["итог"]] || "info");
+    el("ivVerdict").textContent = "вердикт: " + res["итог"] +
+      " · деревьев разбора: " + (res["деревьев_разбора"] === null ? "—" : res["деревьев_разбора"]);
+    let html = "";
+    if (res["нормализована"] && res["нормализована"] !== el("ivText").value)
+      html += "<p>приведённый вид: <code>" + res["нормализована"] + "</code></p>";
+    if (res["замены_оформления"] && res["замены_оформления"].length)
+      html += "<p>замены оформления: " + res["замены_оформления"].join("; ") + "</p>";
+    const f = res["замечания"] || [];
+    if (f.length) {
+      html += "<table class=\"grid\"><thead><tr><th>уровень</th><th>правило</th>" +
+              "<th>замечание</th></tr></thead><tbody>" +
+              f.map(x => "<tr><td>" + x["уровень"] + "</td><td>" + (x["правило"] || "") +
+                         "</td><td>" + x["сообщение"] + "</td></tr>").join("") +
+              "</tbody></table>";
+    } else {
+      html += "<p>замечаний нет.</p>";
+    }
+    el("ivOut").innerHTML = html;
+  }
+  el("ivRun").addEventListener("click", run);
+  el("ivText").addEventListener("keydown", e => { if (e.key === "Enter") run(); });
+  document.querySelectorAll(".ivEx").forEach(a => {
+    a.addEventListener("click", e => {
+      e.preventDefault();
+      el("ivText").value = a.textContent.trim();
+      run();
+    });
+  });
+  await run();
+}
+
+/* ------------------------------------------------------------------ */
+/* Справочник участков                                                 */
+/* ------------------------------------------------------------------ */
+
+async function initRegions() {
+  const data = await call({action: "regions"});
+  const rows = data["строки"] || [];
+  const DIR = {loss: "утрата", gain: "прирост"};
+  function draw(q) {
+    const t = (q || "").trim().toLowerCase();
+    const sel = t ? rows.filter(r =>
+      (r["обозначение"] + " " + r["хромосома"]).toLowerCase().includes(t)) : rows;
+    el("regCount").textContent = "показано " + sel.length + " из " + rows.length +
+      " записей уровня «достаточные доказательства»";
+    el("regOut").innerHTML = "<table class=\"grid\"><thead><tr><th>хромосома</th>" +
+      "<th>границы</th><th>направление</th><th>обозначение</th></tr></thead><tbody>" +
+      sel.slice(0, 200).map(r => "<tr><td>" + r["хромосома"] + "</td><td>" +
+        r["начало"].toLocaleString("ru-RU") + "–" + r["конец"].toLocaleString("ru-RU") +
+        "</td><td>" + (DIR[r["направление"]] || r["направление"]) + "</td><td>" +
+        r["обозначение"] + "</td></tr>").join("") + "</tbody></table>";
+  }
+  el("regFilter").addEventListener("input", e => draw(e.target.value));
+  draw("");
+}

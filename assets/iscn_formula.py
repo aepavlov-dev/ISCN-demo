@@ -1370,7 +1370,11 @@ def check_conventions(text: str, bands: Optional[CytobandTable] = None
     # several chromosomes with one.  Acquired notation (a c suffix, or a sex
     # +/- alongside a constitutional complement) is out of scope and skipped.
     for body in bodies:
-        first_line = body.split(".")[0]
+        # точка разделяет записи ISCN, но она же стоит внутри обозначения подполосы
+        # (q11.2) и внутри мозаичной доли ([0.6]); разделять можно только по
+        # точке, за которой не следует цифра, иначе правило счёта считает по
+        # обрубку строки
+        first_line = re.split(r"\.(?!\d)", body)[0]
         m = re.match(r"^([0-9]{2,3})(?:~[0-9]{2,3})?,(X+Y*|Y+|U)(c?)", first_line.strip())
         if not m:
             continue

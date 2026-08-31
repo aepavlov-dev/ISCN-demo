@@ -35,8 +35,11 @@ footer{border-top:1px solid var(--line);margin-top:2rem;padding:1rem 1.4rem;
 .stand main{padding:1.2rem 1.4rem;max-width:1600px;margin:0 auto}
 .tabs{display:flex;gap:.4rem;flex-wrap:wrap;border-bottom:1px solid var(--line);margin-bottom:1rem}
 .tab{border:1px solid var(--line);border-bottom:none;background:#eef1f4;
-  padding:.45rem .9rem;border-radius:7px 7px 0 0;cursor:pointer;font-size:.95rem}
-.tab.active{background:var(--card);font-weight:600;box-shadow:0 2px 0 0 var(--card)}
+  color:var(--mute);padding:.45rem .9rem;border-radius:7px 7px 0 0;cursor:pointer;
+  font-size:.95rem}
+.tab:hover{color:var(--ink);background:#e4e9ee}
+.tab.active{background:var(--card);color:var(--accent);font-weight:600;
+  box-shadow:0 2px 0 0 var(--card);border-top:2px solid var(--accent)}
 .panel{display:none}
 .panel.active{display:block}
 .lead{max-width:60rem;color:var(--mute)}
@@ -111,14 +114,17 @@ tr.badrow{background:var(--badbg)}
   margin-bottom:.7rem;background:var(--card)}
 .exhead{margin-bottom:.4rem}
 .score{margin-top:.8rem;font-weight:600}
-table.loss{font-size:.85rem}
-table.loss td:first-child{width:14rem}
+.scrollx{overflow-x:auto;max-width:100%}
+table.loss{font-size:.85rem;min-width:52rem}
+table.loss td:first-child{width:13rem}
+table.loss th.key{text-align:center;white-space:nowrap;font-family:var(--mono);
+  font-size:.78rem;padding:.35rem .4rem}
 table.loss td.yes{background:var(--okbg);text-align:center;font-weight:700;color:var(--ok)}
 table.loss td.no{background:var(--badbg);text-align:center;color:var(--bad)}
 tr.rates td{background:#f1f4f7;text-align:center;font-family:var(--mono);font-size:.82rem}
 tr.rates td:first-child{text-align:left;font-family:inherit;color:var(--mute)}
-th.vert{writing-mode:vertical-rl;transform:rotate(180deg);height:9rem;
-  white-space:nowrap;font-size:.78rem;padding:.3rem}
+table.legend{font-size:.86rem;min-width:44rem}
+table.legend td:first-child,table.legend td:last-child{white-space:nowrap}
 
 /* ---------------- слайды ---------------- */
 body.deck{background:#0f1216;color:#e9edf2}
@@ -170,6 +176,32 @@ body.doc blockquote{margin:1rem 0;padding:.6rem .9rem;background:var(--accbg);
   body.doc{max-width:none}
   .slide{display:block;min-height:auto;page-break-after:always}
 }
+
+/* --- вкладки стенда, добавленные для заключения и контроля записи --- */
+.verdict{margin:.6rem 0;padding:.5rem .7rem;border-radius:6px;font-weight:600;
+         border:1px solid var(--line);background:var(--card)}
+.verdict.good{border-color:var(--ok);color:var(--ok)}
+.verdict.warn{border-color:var(--warn);color:var(--warn)}
+.verdict.bad{border-color:var(--bad);color:var(--bad)}
+.verdict.info{border-color:var(--line);color:var(--mute)}
+.col-wide{flex:1 1 62%;min-width:0}
+.col-narrow input[type=text]{width:100%;font-family:var(--mono);font-size:.8rem;
+         padding:.25rem .35rem;margin-bottom:.4rem}
+.col-narrow label{display:block;margin:.5rem 0 .15rem;font-size:.78rem;color:var(--mute)}
+fieldset#vbFlags{border:1px solid var(--line);border-radius:6px;margin:.5rem 0;padding:.4rem .6rem}
+fieldset#vbFlags legend{font-size:.76rem;color:var(--mute);padding:0 .3rem}
+label.check{display:block;font-size:.78rem;color:var(--ink);margin:.12rem 0}
+label.check input{margin-right:.35rem}
+button.primary{margin-top:.5rem;padding:.4rem .8rem;border-radius:6px;cursor:pointer;
+         border:1px solid var(--accent);background:var(--accent);color:#fff;font-weight:600}
+button.primary:hover{filter:brightness(1.08)}
+pre.formula{font-family:var(--mono);font-size:.86rem;background:var(--card);
+         border:1px solid var(--line);border-radius:6px;padding:.5rem .6rem;
+         overflow-x:auto;white-space:pre-wrap;word-break:break-all}
+#p-verb ul,#p-reg ul{margin:.3rem 0 .6rem 1.1rem}
+#p-verb li{margin:.16rem 0}
+#regOut table,#ivOut table{width:100%}
+#regFilter{font-family:var(--mono);font-size:.8rem;padding:.25rem .4rem;min-width:22rem}
 </style>
 </head>
 <body class="deck">
@@ -327,7 +359,71 @@ McGovern&nbsp;Jordan, Hastings, Gersen (ред.), Karger, 2024.
 </ol>
 <p class="hl">Третий отказ найден не рассуждением: собственный вывод генератора
 не прошёл его же проверку соглашений — строка <code>mos 45,X/46,X</code> не
-сходилась по числу хромосом.</p></div></section><section class="slide" data-n="12"><div class="kicker">Дальше</div><h2>Что предлагается делать с этим</h2><div class="body">
+сходилась по числу хромосом.</p></div></section><section class="slide" data-n="12"><div class="kicker">Заключение</div><h2>Словесное описание порождается, а не пишется</h2><div class="body">
+<p>Формула однозначна, но нечитаема без подготовки, поэтому в заключении её
+сопровождает словесное описание. Оно не пишется от руки: порождается из того же
+набора событий, из которого построена формула, четырьмя слоями — что выявлено,
+клиническая значимость, ограничения, что можно сделать дальше.</p>
+<div class="num"><div><b>180</b><span>описаний проверено</span></div><div><b>45</b><span>случаев</span></div><div><b>4</b><span>профилей получателя</span></div><div><b>26</b><span>осей настройки стиля</span></div><div><b>0</b><span>расхождений обратной проверки</span></div></div>
+<p>Обратная проверка здесь двойная и обе половины идут от готового текста к
+данным: факты извлекаются из русского текста и сверяются с набором событий и,
+независимо, с фактами, разобранными из формулы грамматикой. Она нашла девять
+дефектов, которых проверка формулы поймать не могла: формула во всех случаях
+была верна. Самый тяжёлый — триплоидия описывалась словами «аберраций не
+выявлено», потому что плоидность выражена в формуле множителем, а не событием.</p>
+<p>Стиль задан данными, а не разветвлением в коде: профиль — это набор значений
+26 осей, и любую можно переключить поверх профиля.
+Категория значимости от профиля не зависит: значимость есть свойство находки,
+а не читателя.</p>
+</div></section><section class="slide" data-n="13"><div class="kicker">Практика</div><h2>Сверка с первоисточниками: 21 расхождение из 52 требований</h2><div class="body">
+<p>Требования к содержанию заключения выписаны из документов практики и сверены
+с нашей выдачей построчно. Каждая выдержка проверена на посимвольное совпадение
+с текстом первоисточника.</p>
+<div class="num"><div><b>6</b><span>документов затребовано</span></div><div><b>4</b><span>получено полными текстами</span></div><div><b>52</b><span>требований разобрано</span></div><div><b>18</b><span>соответствует</span></div><div><b>21</b><span>расходится</span></div><div><b>13</b><span>не покрыто</span></div></div>
+<p><b>Главное, что нашлось.</b> Оборот со словом «отрицательный» стоял в
+135 описаниях из 180,
+и наш собственный список запрещённых формулировок его не ловил — проверка
+пропускала нарушение того правила, которым обоснована сама. Исправлено: таких
+оборотов теперь 0.</p>
+<p>Добавлены выделенный вывод, повтор клинического вопроса, оговорка о том, что
+последствия переноса эмбриона с мозаичной находкой неизвестны, и заявление о
+неразглашении полового набора. Запрет на упоминание пренатальной диагностики
+сужен: первоисточник прямо допускает указание на необходимость подтверждения
+результата при наступившей беременности.</p>
+<p><b>Границы мозаицизма 0,20 и 0,80 не подтверждены ни одной выдержкой</b>:
+позиционные документы, откуда они могли быть взяты, закрыты платным доступом.
+В четырёх прочитанных документах классифицирующих границ нет вовсе, а решение о
+границе прямо назначено самой лаборатории. Поэтому границы — настройка, и
+приписывание их первоисточнику снято.</p>
+</div></section><section class="slide" data-n="14"><div class="kicker">Контроль входа</div><h2>Чужая запись: вердикт вместо исключения</h2><div class="body">
+<p>Проверки, построенные для собственной выдачи, к чужой записи неприменимы: своя
+строка всегда в области применения и всегда грамматична. Входной контроль
+добавляет приведение оформления, вердикт из 5 значений
+и замечания 3 уровней.</p>
+<div class="num"><div><b>29</b><span>верных записей в приёмке</span></div><div><b>2</b><span>ложных отказов до правок</span></div><div><b>0</b><span>ложных отказов после</span></div><div><b>33</b><span>неверных записей</span></div><div><b>5</b><span>пропущено после</span></div></div>
+<p>Ложный отказ на верной записи считается таким же дефектом, как пропуск
+неверной: проверку с ложными отказами вынуждены отключить. Причина отказов
+оказалась хуже ожидаемой: строка делилась на записи по точке, а точка стоит и
+внутри обозначения подполосы, поэтому правило счёта хромосом считало по обрубку
+строки — для любой кариотипной записи с подполосой.</p>
+<p>Пять оставшихся пропусков перечислены в наборе проверок явным списком, чтобы
+сокращение списка было видно, а расширение заметно. Порядок точек разрыва внутри
+плеча намеренно не проверяется: подтверждающей выдержки из стандарта нет, а
+вводить правило по памяти значит снова отвергать верные записи.</p>
+</div></section><section class="slide" data-n="15"><div class="kicker">Обозначения</div><h2>Справочник участков подчинён списку целей</h2><div class="body">
+<p>Обозначение критического участка в тексте заключения нельзя брать из памяти.
+Справочник построен из кураторского перечня дозовой чувствительности участков и
+даёт обозначение и уточнённые границы, но не задаёт, где вести поиск: цели
+задаёт список регионов частых клинически значимых нарушений.</p>
+<div class="num"><div><b>513</b><span>участков в перечне</span></div><div><b>78</b><span>отобрано в справочник</span></div><div><b>59</b><span>различных участков</span></div><div><b>74</b><span>меток списка ПГТ-А</span></div><div><b>52</b><span>из них с кураторским участком</span></div><div><b>4</b><span>расхождение границ вдвое и более</span></div></div>
+<p>Прежняя заготовка из семи областей, записанная при разработке по памяти,
+расходилась с кураторскими границами по всем семи, а по участку 1p36 — почти
+вдвое по протяжённости. Следствие не косметическое: утверждение о перекрытии
+выносится при покрытии участка не менее чем на девять десятых, поэтому
+завышенная протяжённость означает молчание там, где утверждение уместно.</p>
+<p>До подтверждения врачом построчно справочник в заключениях не применяется:
+обозначение из него попадает в текст, который подписывает врач.</p>
+</div></section><section class="slide" data-n="16"><div class="kicker">Дальше</div><h2>Что предлагается делать с этим</h2><div class="body">
 <ul>
 <li><b>В бланк результата</b> — каноническая форма (короткая система с координатами
 и сборкой) плюс кариотипная строка как пояснительная, с перечнем событий,
@@ -355,7 +451,7 @@ McGovern&nbsp;Jordan, Hastings, Gersen (ред.), Karger, 2024.
   <button id="prev">←</button><button id="next">→</button>
   <span id="ttl">Генератор формул ISCN 2024</span>
   <a href="stand.html">стенд</a><a href="report.html">отчёт</a>
-  <span class="pos"><span id="cur">1</span> / 12</span>
+  <span class="pos"><span id="cur">1</span> / 16</span>
 </div>
 <script>
 const slides=[...document.querySelectorAll('.slide')];
