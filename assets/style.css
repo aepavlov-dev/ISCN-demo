@@ -28,8 +28,11 @@ footer{border-top:1px solid var(--line);margin-top:2rem;padding:1rem 1.4rem;
 .stand main{padding:1.2rem 1.4rem;max-width:1600px;margin:0 auto}
 .tabs{display:flex;gap:.4rem;flex-wrap:wrap;border-bottom:1px solid var(--line);margin-bottom:1rem}
 .tab{border:1px solid var(--line);border-bottom:none;background:#eef1f4;
-  padding:.45rem .9rem;border-radius:7px 7px 0 0;cursor:pointer;font-size:.95rem}
-.tab.active{background:var(--card);font-weight:600;box-shadow:0 2px 0 0 var(--card)}
+  color:var(--mute);padding:.45rem .9rem;border-radius:7px 7px 0 0;cursor:pointer;
+  font-size:.95rem}
+.tab:hover{color:var(--ink);background:#e4e9ee}
+.tab.active{background:var(--card);color:var(--accent);font-weight:600;
+  box-shadow:0 2px 0 0 var(--card);border-top:2px solid var(--accent)}
 .panel{display:none}
 .panel.active{display:block}
 .lead{max-width:60rem;color:var(--mute)}
