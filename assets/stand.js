@@ -478,7 +478,7 @@ const VB_FLAGS = ["highlight_conclusion", "restate_question", "transfer_guidance
 
 async function initVerbalize() {
   const cases = await call({action: "cases"});
-  const sel = el("vbCase");
+  const sel = $("#vbCase");
   const groups = {};
   cases.forEach(c => { (groups[c.group] = groups[c.group] || []).push(c); });
   Object.keys(groups).forEach(g => {
@@ -495,7 +495,7 @@ async function initVerbalize() {
   sel.selectedIndex = 0;
 
   const prof = await call({action: "profiles"});
-  const ps = el("vbProfile");
+  const ps = $("#vbProfile");
   Object.keys(prof["профили"]).forEach(p => {
     const o = document.createElement("option");
     o.value = p; o.textContent = p;
@@ -503,7 +503,7 @@ async function initVerbalize() {
   });
   ps.value = "генетик";
 
-  const fs = el("vbFlags");
+  const fs = $("#vbFlags");
   VB_FLAGS.forEach(name => {
     const meta = prof["поля"].find(f => f["имя"] === name);
     const id = "vbf_" + name;
@@ -517,36 +517,36 @@ async function initVerbalize() {
   function syncFlags() {
     const vals = prof["профили"][ps.value] || {};
     VB_FLAGS.forEach(name => {
-      const box = el("vbf_" + name);
+      const box = $("#vbf_" + name);
       if (box) box.checked = !!vals[name];
     });
     const th = vals["mosaic_thresholds"];
-    if (th) el("vbThresholds").value = th.map(x => String(x).replace(".", ",")).join("; ");
+    if (th) $("#vbThresholds").value = th.map(x => String(x).replace(".", ",")).join("; ");
   }
   ps.addEventListener("change", syncFlags);
   syncFlags();
 
   async function run() {
-    const style = {mosaic_thresholds: el("vbThresholds").value};
+    const style = {mosaic_thresholds: $("#vbThresholds").value};
     VB_FLAGS.forEach(name => {
-      const box = el("vbf_" + name);
+      const box = $("#vbf_" + name);
       if (box) style[name] = box.checked;
     });
     const res = await call({
       action: "verbalize", key: sel.value, profile: ps.value, style: style,
-      question: el("vbQuestion").value,
-      detection_limit: el("vbLimit").value.replace(",", ".")
+      question: $("#vbQuestion").value,
+      detection_limit: $("#vbLimit").value.replace(",", ".")
     });
     if (res && res.error) {
-      el("vbVerdict").className = "verdict bad";
-      el("vbVerdict").textContent = "ошибка настройки: " + res.error;
-      el("vbOut").innerHTML = ""; el("vbCheck").innerHTML = "";
+      $("#vbVerdict").className = "verdict bad";
+      $("#vbVerdict").textContent = "ошибка настройки: " + res.error;
+      $("#vbOut").innerHTML = ""; $("#vbCheck").innerHTML = "";
       return;
     }
     const cat = res["категория"] || "—";
-    el("vbVerdict").className = "verdict " +
+    $("#vbVerdict").className = "verdict " +
       (res["проверка"]["итог"] === "ок" ? "good" : "bad");
-    el("vbVerdict").textContent = "категория значимости: " + cat +
+    $("#vbVerdict").textContent = "категория значимости: " + cat +
       " · обратная проверка текста: " + res["проверка"]["итог"] +
       (res["запрещённые"].length
         ? " · запрещённых формулировок: " + res["запрещённые"].length : "");
@@ -565,15 +565,15 @@ async function initVerbalize() {
       if (typeof body === "string") html += "<pre class=\"formula\">" + body + "</pre>";
       else html += "<ul>" + body.map(s => "<li>" + s + "</li>").join("") + "</ul>";
     });
-    el("vbOut").innerHTML = html;
+    $("#vbOut").innerHTML = html;
     const chk = res["проверка"];
     const rows = Object.keys(chk).filter(k => k !== "итог").map(k =>
       [k, Array.isArray(chk[k]) ? (chk[k].join(", ") || "—") : String(chk[k])]);
-    el("vbCheck").innerHTML = "<table class=\"grid\"><tbody>" +
+    $("#vbCheck").innerHTML = "<table class=\"grid\"><tbody>" +
       rows.map(r => "<tr><th>" + r[0] + "</th><td>" + r[1] + "</td></tr>").join("") +
       "</tbody></table>";
   }
-  el("vbRun").addEventListener("click", run);
+  $("#vbRun").addEventListener("click", run);
   sel.addEventListener("change", run);
   await run();
 }
@@ -588,12 +588,12 @@ const IV_CLS = {"годна": "good", "годна с замечаниями": "w
 
 async function initValidate() {
   async function run() {
-    const res = await call({action: "validate", text: el("ivText").value});
-    el("ivVerdict").className = "verdict " + (IV_CLS[res["итог"]] || "info");
-    el("ivVerdict").textContent = "вердикт: " + res["итог"] +
+    const res = await call({action: "validate", text: $("#ivText").value});
+    $("#ivVerdict").className = "verdict " + (IV_CLS[res["итог"]] || "info");
+    $("#ivVerdict").textContent = "вердикт: " + res["итог"] +
       " · деревьев разбора: " + (res["деревьев_разбора"] === null ? "—" : res["деревьев_разбора"]);
     let html = "";
-    if (res["нормализована"] && res["нормализована"] !== el("ivText").value)
+    if (res["нормализована"] && res["нормализована"] !== $("#ivText").value)
       html += "<p>приведённый вид: <code>" + res["нормализована"] + "</code></p>";
     if (res["замены_оформления"] && res["замены_оформления"].length)
       html += "<p>замены оформления: " + res["замены_оформления"].join("; ") + "</p>";
@@ -607,14 +607,14 @@ async function initValidate() {
     } else {
       html += "<p>замечаний нет.</p>";
     }
-    el("ivOut").innerHTML = html;
+    $("#ivOut").innerHTML = html;
   }
-  el("ivRun").addEventListener("click", run);
-  el("ivText").addEventListener("keydown", e => { if (e.key === "Enter") run(); });
+  $("#ivRun").addEventListener("click", run);
+  $("#ivText").addEventListener("keydown", e => { if (e.key === "Enter") run(); });
   document.querySelectorAll(".ivEx").forEach(a => {
     a.addEventListener("click", e => {
       e.preventDefault();
-      el("ivText").value = a.textContent.trim();
+      $("#ivText").value = a.textContent.trim();
       run();
     });
   });
@@ -633,15 +633,15 @@ async function initRegions() {
     const t = (q || "").trim().toLowerCase();
     const sel = t ? rows.filter(r =>
       (r["обозначение"] + " " + r["хромосома"]).toLowerCase().includes(t)) : rows;
-    el("regCount").textContent = "показано " + sel.length + " из " + rows.length +
+    $("#regCount").textContent = "показано " + sel.length + " из " + rows.length +
       " записей уровня «достаточные доказательства»";
-    el("regOut").innerHTML = "<table class=\"grid\"><thead><tr><th>хромосома</th>" +
+    $("#regOut").innerHTML = "<table class=\"grid\"><thead><tr><th>хромосома</th>" +
       "<th>границы</th><th>направление</th><th>обозначение</th></tr></thead><tbody>" +
       sel.slice(0, 200).map(r => "<tr><td>" + r["хромосома"] + "</td><td>" +
         r["начало"].toLocaleString("ru-RU") + "–" + r["конец"].toLocaleString("ru-RU") +
         "</td><td>" + (DIR[r["направление"]] || r["направление"]) + "</td><td>" +
         r["обозначение"] + "</td></tr>").join("") + "</tbody></table>";
   }
-  el("regFilter").addEventListener("input", e => draw(e.target.value));
+  $("#regFilter").addEventListener("input", e => draw(e.target.value));
   draw("");
 }

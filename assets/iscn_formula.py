@@ -2065,9 +2065,62 @@ def ambiguity_report(case: Case, bands: CytobandTable) -> Dict[str, Any]:
     out: Dict[str, Any] = {}
     for key in FORMS:
         keep = LOSS_MATRIX[key]
-        lost = [a for a, p in present.items() if p and not keep.get(a, False)]
+        carried = _attributes_carried(case, key, bands)
+        # ``LOSS_MATRIX`` объявляет, что форма способна выразить В ОБЩЕМ СЛУЧАЕ,
+        # а не что она выражает для данного случая. Пример расхождения: у
+        # профиля без аберраций сокращённая система печатает половой набор
+        # (8.1.1b), поэтому помечать его потерянным нельзя, хотя для случая с
+        # находкой та же форма его действительно не несёт. Поэтому объявление
+        # уточняется тем, что фактически восстанавливается из выданной строки.
+        lost = [a for a, p in present.items()
+                if p and not keep.get(a, False) and a not in carried]
         out[key] = {"lost_attributes": lost}
     return out
+
+
+def _attributes_carried(case: Case, form: str,
+                        bands: "CytobandTable") -> set:
+    """Признаки, которые фактически восстанавливаются из строки этой формы.
+
+    Считается по фактам, которые несёт выданная строка (``project`` даёт ровно
+    их, и обратная проверка это подтверждает), а не по объявлению формы.
+    """
+    try:
+        render(case, form, bands)          # неприменимая форма ничего не несёт
+        facts = project(case, form, bands)
+    except Unrenderable:
+        return set()
+    except Exception:                      # noqa: BLE001
+        # признаки установить не удалось — остаётся объявление формы
+        return set()
+    got: set = set()
+    for f in facts:
+        kind = f[0]
+        if kind == "cn":
+            _, chrom, band, start, end, flanks, cn, cnrange, frac, inh, zyg = f[:11]
+            if chrom in ("X", "Y"):
+                got.add("sex_complement")
+            if band:
+                got.add("breakpoint_bands")
+            if start is not None:
+                got.add("coordinates")
+            if flanks and any(flanks):
+                got.add("flanking_normal")
+            if cn is not None or cnrange:
+                got.add("copy_number")
+            if frac:
+                got.add("mosaic_fraction")
+            if inh:
+                got.add("parental_origin")
+            if zyg:
+                got.add("zygosity")
+        elif kind == "cnrange_group":
+            got.add("copy_number")
+        elif kind == "sex":
+            got.add("sex_complement")
+        elif kind == "structural":
+            got.add("mechanism")
+    return got
 
 
 def collision_scan(cases: Sequence[Tuple[str, Case]], bands: CytobandTable
