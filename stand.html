@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Стенд: генератор формул ISCN 2024</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body class="stand">
+
+<header>
+  <h1>Генератор формул ISCN 2024 — демонстрационный стенд</h1>
+  <nav>
+    <a href="index.html">Слайды</a>
+    <a href="report.html">Отчёт</a>
+    <span id="boot" class="boot">среда загружается…</span>
+  </nav>
+</header>
+
+<div id="bootbar"><div id="bootfill"></div></div>
+
+<main hidden id="app">
+
+<div class="tabs" role="tablist">
+  <button class="tab active" data-panel="p-cases">Примеры</button>
+  <button class="tab" data-panel="p-own">Свой случай</button>
+  <button class="tab" data-panel="p-audit">Разбор чужой записи</button>
+  <button class="tab" data-panel="p-ex">Упражнение</button>
+  <button class="tab" data-panel="p-forms">Формы и потери</button>
+</div>
+
+<!-- ------------------------------------------------------------------ -->
+<section id="p-cases" class="panel active">
+  <p class="lead">Сорок пять случаев: три отработанных образца прогона и синтетическая
+  батарея практики ПГТ-А и ПГТ-СР. Выберите случай — справа появятся все
+  одиннадцать форм записи с итогом обратной проверки.</p>
+  <div class="split">
+    <div class="col-narrow">
+      <label for="caseSel">Случай</label>
+      <select id="caseSel" size="20"></select>
+      <p id="caseDesc" class="desc"></p>
+    </div>
+    <div class="col-wide">
+      <div id="caseOut"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------------ -->
+<section id="p-own" class="panel">
+  <p class="lead">Соберите случай сами. Заполненный набор событий — единственный
+  вход генератора: все формы выводятся из него, поэтому разойтись между собой
+  они не могут.</p>
+  <div class="split">
+    <div class="col-narrow">
+      <div class="grid2">
+        <label>Образец<input id="oSample" value="демонстрация"></label>
+        <label>Методика
+          <select id="oTech">
+            <option value="seq">seq — секвенирование</option>
+            <option value="sseq">sseq — малая глубина</option>
+            <option value="arr">arr — микрочип</option>
+          </select></label>
+        <label>Половой набор
+          <select id="oSex">
+            <option>XX</option><option>XY</option><option>X</option>
+            <option>XXY</option><option>XXX</option><option>XYY</option>
+            <option>XXYY</option><option value="U">U — не раскрывается</option>
+          </select></label>
+        <label>Плоидность<input id="oPloidy" type="number" value="2" min="1" max="4"></label>
+        <label>Зиготность набора
+          <select id="oZyg"><option value="">—</option>
+            <option value="hmz">hmz</option><option value="hmz htz">hmz htz</option>
+          </select></label>
+        <label class="chk"><input id="oKaryo" type="checkbox"> кариотип выполнен</label>
+      </div>
+      <h3>События</h3>
+      <div id="events"></div>
+      <button id="addEvent" class="secondary">Добавить событие</button>
+      <button id="runOwn">Построить формулы</button>
+      <details class="hint">
+        <summary>Как заполнять</summary>
+        <ul>
+          <li><b>Масштаб</b>: «хромосома» — целая хромосома, координаты не нужны;
+              «сегмент» — участок с границами.</li>
+          <li><b>Ожидаемая копийность</b> — 2 для аутосом и для двух X;
+              1 для единственной X и для Y.</li>
+          <li><b>Доля</b> — оценённая доля клеток, от 0 до 1; пусто, если
+              событие полное. Знак вопроса — доля неопределима.</li>
+          <li><b>Механизм</b> — символ перестройки и точки разрыва. Пусто
+              означает «механизм не наблюдался»: кариотипные формы будут
+              отклонены, и это правильное поведение (пункт 5.5.15c).</li>
+        </ul>
+      </details>
+    </div>
+    <div class="col-wide"><div id="ownOut"></div></div>
+  </div>
+</section>
+
+<!-- ------------------------------------------------------------------ -->
+<section id="p-audit" class="panel">
+  <p class="lead">Вставьте запись, полученную извне: из каталога линии, из отчёта
+  сторонней лаборатории, из статьи. Инструмент разберёт её по грамматике,
+  пересчитает обозначения полос из координат по заявленной сборке и перечислит
+  нарушенные пункты стандарта.</p>
+  <div class="row">
+    <textarea id="auditText" rows="3" placeholder="например: 47,XX,+der(22)t(16;22)(p13.3;q11.21)mat[32]"></textarea>
+    <div class="ctl">
+      <label>Сборка
+        <select id="auditBuild"><option>GRCh38</option><option>hg19</option></select>
+      </label>
+      <button id="runAudit">Разобрать</button>
+    </div>
+  </div>
+  <div class="samples">
+    <span>Готовые примеры:</span>
+    <button class="link" data-a="47,XX,+der(22)t(16;22)(p13.3;q11.21)mat[32]" data-b="hg19">каталожная запись NA02325</button>
+    <button class="link" data-a="arr[GRCh38] 18p11.32p11.21(102,328_15,079,388)×1,18q22.3q23(69,172,132_79,093,443)×1" data-b="GRCh38">пример 8.2.2xxiv книги</button>
+    <button class="link" data-a="Xp22.33p11.1(108464-56912309)x1" data-b="GRCh38">каталожная запись NA13019</button>
+    <button class="link" data-a="46,XY/47,XY,+21" data-b="GRCh38">неверный порядок клонов</button>
+    <button class="link" data-a="46,XX,dic(13;15)(q22;q24),+13" data-b="GRCh38">неверный порядок аберраций</button>
+    <button class="link" data-a="46,XX,der(1)t(1;3)(p32;q21),dup(1)(q25q42)" data-b="GRCh38">запятая внутри производной</button>
+  </div>
+  <div id="auditOut"></div>
+</section>
+
+<!-- ------------------------------------------------------------------ -->
+<section id="p-ex" class="panel">
+  <p class="lead">Десять случаев. Напишите формулу сами, затем сверьтесь.
+  Верным считается совпадение с любой допустимой формой, а не только с
+  канонической.</p>
+  <div id="exList"></div>
+  <div id="exScore" class="score"></div>
+</section>
+
+<!-- ------------------------------------------------------------------ -->
+<section id="p-forms" class="panel">
+  <p class="lead">Что каждая форма способна выразить. Отметка «+» означает, что
+  признак события форма несёт, «–» — что признак теряется при записи.</p>
+  <div id="formsOut"></div>
+</section>
+
+</main>
+
+<footer>
+  <p>Логика стенда — модуль <code>iscn_formula.py</code>, тот же, что прошёл
+  набор проверок и работает из командной строки. Страница исполняет его
+  в браузере, ничего не отправляя на сервер.</p>
+</footer>
+
+<!-- Загрузчик среды подключается сценарием: номер версии закреплён
+     единственной строкой PYODIDE_VERSION в assets/stand.js -->
+<script src="assets/stand.js"></script>
+</body>
+</html>
