@@ -107,14 +107,17 @@ tr.badrow{background:var(--badbg)}
   margin-bottom:.7rem;background:var(--card)}
 .exhead{margin-bottom:.4rem}
 .score{margin-top:.8rem;font-weight:600}
-table.loss{font-size:.85rem}
-table.loss td:first-child{width:14rem}
+.scrollx{overflow-x:auto;max-width:100%}
+table.loss{font-size:.85rem;min-width:52rem}
+table.loss td:first-child{width:13rem}
+table.loss th.key{text-align:center;white-space:nowrap;font-family:var(--mono);
+  font-size:.78rem;padding:.35rem .4rem}
 table.loss td.yes{background:var(--okbg);text-align:center;font-weight:700;color:var(--ok)}
 table.loss td.no{background:var(--badbg);text-align:center;color:var(--bad)}
 tr.rates td{background:#f1f4f7;text-align:center;font-family:var(--mono);font-size:.82rem}
 tr.rates td:first-child{text-align:left;font-family:inherit;color:var(--mute)}
-th.vert{writing-mode:vertical-rl;transform:rotate(180deg);height:9rem;
-  white-space:nowrap;font-size:.78rem;padding:.3rem}
+table.legend{font-size:.86rem;min-width:44rem}
+table.legend td:first-child,table.legend td:last-child{white-space:nowrap}
 
 /* ---------------- слайды ---------------- */
 body.deck{background:#0f1216;color:#e9edf2}

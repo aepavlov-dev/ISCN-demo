@@ -431,18 +431,35 @@ async function initForms() {
   const d = call({ action: "forms" });
   const keys = Object.keys(d.forms);
   const attrs = Object.keys(d.loss[keys[0]]);
+  const cr = STATS["совпадения"];
+
+  /* Заголовки — короткие обозначения форм горизонтально: повёрнутый текст
+     длинных названий не вмещается в ячейку и выходит за пределы таблицы.
+     Полные названия вынесены в перечень под таблицей. */
   const head = el("tr", {}, el("th", {}, "Признак события"),
-    ...keys.map((k) => el("th", { class: "vert" }, d.forms[k].name)));
+    ...keys.map((k) => el("th", { class: "key" }, el("code", {}, k))));
   const body = attrs.map((a) => el("tr", {}, el("td", {}, a),
     ...keys.map((k) => el("td", { class: d.loss[k][a] ? "yes" : "no" },
       d.loss[k][a] ? "+" : "–"))));
-  const cr = STATS["совпадения"];
-  const rates = el("tr", { class: "rates" }, el("td", {}, "доля совпадений"),
-    ...keys.map((k) => el("td", {}, String(cr[k]["доля"]).replace(".", ","))));
   const adm = el("tr", { class: "rates" }, el("td", {}, "допустима в случаях"),
     ...keys.map((k) => el("td", {}, String(cr[k]["допустимых"]))));
-  $("#formsOut").replaceChildren(el("table", { class: "loss" },
-    el("thead", {}, head), el("tbody", {}, [...body, adm, rates])));
+  const rates = el("tr", { class: "rates" }, el("td", {}, "доля совпадений"),
+    ...keys.map((k) => el("td", {}, String(cr[k]["доля"]).replace(".", ","))));
+
+  const legend = el("table", { class: "legend" },
+    el("thead", {}, el("tr", {}, el("th", {}, "Обозначение"), el("th", {}, "Форма записи"),
+      el("th", {}, "Формат"), el("th", {}, "Система"), el("th", {}, "Пункты ISCN"))),
+    el("tbody", {}, keys.map((k) => el("tr", {},
+      el("td", {}, el("code", {}, k)), el("td", {}, d.forms[k].name),
+      el("td", {}, d.forms[k].format), el("td", {}, d.forms[k].system),
+      el("td", {}, el("code", {}, d.forms[k].citation))))));
+
+  $("#formsOut").replaceChildren(
+    el("div", { class: "scrollx" },
+      el("table", { class: "loss" }, el("thead", {}, head),
+        el("tbody", {}, [...body, adm, rates]))),
+    el("h3", {}, "Обозначения форм"),
+    el("div", { class: "scrollx" }, legend));
 }
 
 boot();
