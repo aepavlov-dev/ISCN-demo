@@ -1,0 +1,2326 @@
+[
+ {
+  "key": "NA00496",
+  "group": "Образцы прогона",
+  "description": "Мозаичная трисомия 8, доля 0,97 (мужской образец)",
+  "case": {
+   "sample": "NA00496",
+   "events": [
+    {
+     "chrom": "8",
+     "copy_number": 3,
+     "start": null,
+     "end": null,
+     "scale": "chromosome",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": 0.97,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "chr8 полностью, z=+63, копийность 2,94",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XY",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "NA02325-доза",
+  "group": "Образцы прогона",
+  "description": "Три прироста дозы, механизм не установлен",
+  "case": {
+   "sample": "NA02325",
+   "events": [
+    {
+     "chrom": "X",
+     "copy_number": 3,
+     "start": 154890328,
+     "end": 155335092,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    },
+    {
+     "chrom": "16",
+     "copy_number": 3,
+     "start": 200001,
+     "end": 3700000,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    },
+    {
+     "chrom": "22",
+     "copy_number": 3,
+     "start": 17100001,
+     "end": 30500000,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XX",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "NA02325-производная",
+  "group": "Образцы прогона",
+  "description": "Тот же образец с установленным механизмом: сверхчисленная der(22)t(16;22) материнского происхождения",
+  "case": {
+   "sample": "NA02325",
+   "events": [
+    {
+     "chrom": "X",
+     "copy_number": 3,
+     "start": 154890328,
+     "end": 155335092,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    },
+    {
+     "chrom": "16",
+     "copy_number": 3,
+     "start": 200001,
+     "end": 3700000,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": "22",
+     "label": "",
+     "baseline": 2
+    },
+    {
+     "chrom": "22",
+     "copy_number": 3,
+     "start": 17100001,
+     "end": 30500000,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": {
+      "chain": [
+       {
+        "symbol": "der",
+        "chroms": [
+         "22"
+        ]
+       },
+       {
+        "symbol": "t",
+        "chroms": [
+         "16",
+         "22"
+        ],
+        "breakpoints": [
+         "p13.3",
+         "q11.21"
+        ]
+       }
+      ],
+      "tail": "mat"
+     },
+     "supernumerary": true,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XX",
+   "sex_disclosed": true,
+   "karyotype_available": true,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "NA13019-доза",
+  "group": "Образцы прогона",
+  "description": "Одна X: потеря Xp и избыток Xq, доля 0,68",
+  "case": {
+   "sample": "NA13019",
+   "events": [
+    {
+     "chrom": "X",
+     "copy_number": 1,
+     "start": 2900001,
+     "end": 56900000,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    },
+    {
+     "chrom": "X",
+     "copy_number": 3,
+     "start": 62800001,
+     "end": 155700000,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": 0.68,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "X",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "NA13019-клоны",
+  "group": "Образцы прогона",
+  "description": "Тот же образец клонами: изохромосома Xq в 68 % и моносомия X в 32 %",
+  "case": {
+   "sample": "NA13019",
+   "events": [
+    {
+     "chrom": "X",
+     "copy_number": 1,
+     "start": 2900001,
+     "end": 56900000,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    },
+    {
+     "chrom": "X",
+     "copy_number": 3,
+     "start": 62800001,
+     "end": 155700000,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": 0.68,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [
+    {
+     "events": [
+      {
+       "chrom": "X",
+       "copy_number": 2,
+       "start": 62800001,
+       "end": 155700000,
+       "scale": "segment",
+       "arm": null,
+       "flank_left": null,
+       "flank_right": null,
+       "flank_copy_number": null,
+       "copy_number_range": null,
+       "mosaic_fraction": null,
+       "mosaic_fraction_range": null,
+       "mosaic_fraction_unknown": false,
+       "inheritance": null,
+       "zygosity": null,
+       "structure": {
+        "chain": [
+         {
+          "symbol": "i",
+          "chroms": [
+           "X"
+          ],
+          "breakpoints": [
+           "q10"
+          ]
+         }
+        ]
+       },
+       "supernumerary": false,
+       "explained_by": null,
+       "label": "",
+       "baseline": 1
+      }
+     ],
+     "sex_chromosomes": "XX",
+     "cells": null,
+     "fraction": 0.68,
+     "ploidy": 2,
+     "normal": false
+    },
+    {
+     "events": [
+      {
+       "chrom": "X",
+       "copy_number": 1,
+       "start": null,
+       "end": null,
+       "scale": "chromosome",
+       "arm": null,
+       "flank_left": null,
+       "flank_right": null,
+       "flank_copy_number": null,
+       "copy_number_range": null,
+       "mosaic_fraction": null,
+       "mosaic_fraction_range": null,
+       "mosaic_fraction_unknown": false,
+       "inheritance": null,
+       "zygosity": null,
+       "structure": null,
+       "supernumerary": false,
+       "explained_by": null,
+       "label": "",
+       "baseline": 2
+      }
+     ],
+     "sex_chromosomes": "X",
+     "cells": null,
+     "fraction": 0.32,
+     "ploidy": 2,
+     "normal": false
+    }
+   ],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "X",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A01",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Эуплоидный женский профиль",
+  "case": {
+   "sample": "A01",
+   "events": [],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XX",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A02",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Эуплоидный мужской профиль",
+  "case": {
+   "sample": "A02",
+   "events": [],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XY",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A03",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Эуплоидный профиль, пол не раскрывается",
+  "case": {
+   "sample": "A03",
+   "events": [],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "U",
+   "sex_disclosed": false,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A04",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Полная трисомия 21",
+  "case": {
+   "sample": "A04",
+   "events": [
+    {
+     "chrom": "21",
+     "copy_number": 3,
+     "start": null,
+     "end": null,
+     "scale": "chromosome",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XY",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A05",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Полная моносомия 21",
+  "case": {
+   "sample": "A05",
+   "events": [
+    {
+     "chrom": "21",
+     "copy_number": 1,
+     "start": null,
+     "end": null,
+     "scale": "chromosome",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XX",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A06",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Полная трисомия 16",
+  "case": {
+   "sample": "A06",
+   "events": [
+    {
+     "chrom": "16",
+     "copy_number": 3,
+     "start": null,
+     "end": null,
+     "scale": "chromosome",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XX",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A07",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Двойная анеуплоидия: трисомия 21 и моносомия 22",
+  "case": {
+   "sample": "A07",
+   "events": [
+    {
+     "chrom": "21",
+     "copy_number": 3,
+     "start": null,
+     "end": null,
+     "scale": "chromosome",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    },
+    {
+     "chrom": "22",
+     "copy_number": 1,
+     "start": null,
+     "end": null,
+     "scale": "chromosome",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XY",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A08",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Хаотический набор: пять полных событий",
+  "case": {
+   "sample": "A08",
+   "events": [
+    {
+     "chrom": "2",
+     "copy_number": 3,
+     "start": null,
+     "end": null,
+     "scale": "chromosome",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    },
+    {
+     "chrom": "7",
+     "copy_number": 1,
+     "start": null,
+     "end": null,
+     "scale": "chromosome",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    },
+    {
+     "chrom": "13",
+     "copy_number": 3,
+     "start": null,
+     "end": null,
+     "scale": "chromosome",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    },
+    {
+     "chrom": "18",
+     "copy_number": 1,
+     "start": null,
+     "end": null,
+     "scale": "chromosome",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    },
+    {
+     "chrom": "21",
+     "copy_number": 3,
+     "start": null,
+     "end": null,
+     "scale": "chromosome",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XX",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A09",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Мозаичная трисомия 16, доля 0,35",
+  "case": {
+   "sample": "A09",
+   "events": [
+    {
+     "chrom": "16",
+     "copy_number": 3,
+     "start": null,
+     "end": null,
+     "scale": "chromosome",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": 0.35,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XX",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A10",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Мозаичная трисомия 16 у нижнего предела, доля 0,20",
+  "case": {
+   "sample": "A10",
+   "events": [
+    {
+     "chrom": "16",
+     "copy_number": 3,
+     "start": null,
+     "end": null,
+     "scale": "chromosome",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": 0.2,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XX",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A11",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Мозаичная моносомия 15, доля не определена",
+  "case": {
+   "sample": "A11",
+   "events": [
+    {
+     "chrom": "15",
+     "copy_number": 1,
+     "start": null,
+     "end": null,
+     "scale": "chromosome",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": true,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XY",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A12",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Мозаичная трисомия 8, доля дана интервалом 0,3~0,5",
+  "case": {
+   "sample": "A12",
+   "events": [
+    {
+     "chrom": "8",
+     "copy_number": 3,
+     "start": null,
+     "end": null,
+     "scale": "chromosome",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": [
+      0.3,
+      0.5
+     ],
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XY",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A13",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Мозаичная трисомия 21, счёт клеток известен (кариотип выполнен)",
+  "case": {
+   "sample": "A13",
+   "events": [
+    {
+     "chrom": "21",
+     "copy_number": 3,
+     "start": null,
+     "end": null,
+     "scale": "chromosome",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": 0.4,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XY",
+   "sex_disclosed": true,
+   "karyotype_available": true,
+   "cell_counts": {
+    "abnormal": 12,
+    "normal": 18
+   },
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A14",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Моносомия X",
+  "case": {
+   "sample": "A14",
+   "events": [
+    {
+     "chrom": "X",
+     "copy_number": 1,
+     "start": null,
+     "end": null,
+     "scale": "chromosome",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "X",
+   "sex_disclosed": true,
+   "karyotype_available": true,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A15",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "47,XXY",
+  "case": {
+   "sample": "A15",
+   "events": [
+    {
+     "chrom": "X",
+     "copy_number": 2,
+     "start": null,
+     "end": null,
+     "scale": "chromosome",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 1
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XXY",
+   "sex_disclosed": true,
+   "karyotype_available": true,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A16",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "47,XXX",
+  "case": {
+   "sample": "A16",
+   "events": [
+    {
+     "chrom": "X",
+     "copy_number": 3,
+     "start": null,
+     "end": null,
+     "scale": "chromosome",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XXX",
+   "sex_disclosed": true,
+   "karyotype_available": true,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A17",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "47,XYY",
+  "case": {
+   "sample": "A17",
+   "events": [
+    {
+     "chrom": "Y",
+     "copy_number": 2,
+     "start": null,
+     "end": null,
+     "scale": "chromosome",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 1
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XYY",
+   "sex_disclosed": true,
+   "karyotype_available": true,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A18",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Мозаичная моносомия X, доля 0,5",
+  "case": {
+   "sample": "A18",
+   "events": [
+    {
+     "chrom": "X",
+     "copy_number": 1,
+     "start": null,
+     "end": null,
+     "scale": "chromosome",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": 0.5,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "X",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A19",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Триплоидия 69,XXX",
+  "case": {
+   "sample": "A19",
+   "events": [],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 3,
+   "sex_chromosomes": "XXX",
+   "sex_disclosed": true,
+   "karyotype_available": true,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A20",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Триплоидия 69,XXY",
+  "case": {
+   "sample": "A20",
+   "events": [],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 3,
+   "sex_chromosomes": "XXY",
+   "sex_disclosed": true,
+   "karyotype_available": true,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A21",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Гаплоидия 23,X",
+  "case": {
+   "sample": "A21",
+   "events": [],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 1,
+   "sex_chromosomes": "X",
+   "sex_disclosed": true,
+   "karyotype_available": true,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A22",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Тетраплоидия 92,XXYY",
+  "case": {
+   "sample": "A22",
+   "events": [],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 4,
+   "sex_chromosomes": "XXYY",
+   "sex_disclosed": true,
+   "karyotype_available": true,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A23",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Полный пузырный занос: диплоидия при полной гомозиготности",
+  "case": {
+   "sample": "A23",
+   "events": [],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XX",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": "hmz",
+   "notes": ""
+  }
+ },
+ {
+  "key": "A24",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Двуспермный занос: гомозиготные и гетерозиготные участки",
+  "case": {
+   "sample": "A24",
+   "events": [],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XX",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": "hmz htz",
+   "notes": ""
+  }
+ },
+ {
+  "key": "A25",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Концевая делеция 4p16.3p15.32 (синдром Вольфа-Хиршхорна)",
+  "case": {
+   "sample": "A25",
+   "events": [
+    {
+     "chrom": "4",
+     "copy_number": 1,
+     "start": 68346,
+     "end": 17000000,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XX",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A26",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Внутренняя дупликация 15q11.2q13.1",
+  "case": {
+   "sample": "A26",
+   "events": [
+    {
+     "chrom": "15",
+     "copy_number": 3,
+     "start": 22600000,
+     "end": 28500000,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XY",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A27",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Мозаичная сегментная делеция 1p36, доля 0,45",
+  "case": {
+   "sample": "A27",
+   "events": [
+    {
+     "chrom": "1",
+     "copy_number": 1,
+     "start": 1000000,
+     "end": 10000000,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": 0.45,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XX",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A28",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Делеция с фланкирующими нормальными позициями (расширенная система)",
+  "case": {
+   "sample": "A28",
+   "events": [
+    {
+     "chrom": "22",
+     "copy_number": 1,
+     "start": 18730698,
+     "end": 21689521,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": 18650000,
+     "flank_right": 21750000,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XY",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A29",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Гомозиготный участок отцовского происхождения: однородительская дисомия 15",
+  "case": {
+   "sample": "A29",
+   "events": [
+    {
+     "chrom": "15",
+     "copy_number": 2,
+     "start": 22600000,
+     "end": 101991189,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": "upat",
+     "zygosity": "hmz",
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XY",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A30",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Сегмент 3,5 Мб при малой глубине (sseq)",
+  "case": {
+   "sample": "A30",
+   "events": [
+    {
+     "chrom": "7",
+     "copy_number": 1,
+     "start": 100000000,
+     "end": 103500000,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "sseq",
+   "ploidy": 2,
+   "sex_chromosomes": "XX",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A31",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Первое полярное тельце: потеря хроматиды 21",
+  "case": {
+   "sample": "A31",
+   "events": [
+    {
+     "chrom": "21",
+     "copy_number": 0,
+     "start": null,
+     "end": null,
+     "scale": "chromosome",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "arr",
+   "ploidy": 2,
+   "sex_chromosomes": null,
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": true,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "A32",
+  "group": "ПГТ-А: анеуплоидии и мозаицизм",
+  "description": "Комплексная перестройка одной хромосомы (хромотрипсис)",
+  "case": {
+   "sample": "A32",
+   "events": [
+    {
+     "chrom": "5",
+     "copy_number": 1,
+     "start": 1000000,
+     "end": 20000000,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    },
+    {
+     "chrom": "5",
+     "copy_number": 3,
+     "start": 20000001,
+     "end": 30000000,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    },
+    {
+     "chrom": "5",
+     "copy_number": 1,
+     "start": 40000000,
+     "end": 50000000,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XY",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "S01",
+  "group": "ПГТ-СР: структурные перестройки",
+  "description": "Несбалансированный продукт реципрокной транслокации, сегрегация 2:2: потеря 5p, прирост 11q",
+  "case": {
+   "sample": "S01",
+   "events": [
+    {
+     "chrom": "5",
+     "copy_number": 1,
+     "start": 1,
+     "end": 22000000,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": "5",
+     "label": "",
+     "baseline": 2
+    },
+    {
+     "chrom": "11",
+     "copy_number": 3,
+     "start": 100000000,
+     "end": 135086622,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": {
+      "chain": [
+       {
+        "symbol": "der",
+        "chroms": [
+         "5"
+        ]
+       },
+       {
+        "symbol": "t",
+        "chroms": [
+         "5",
+         "11"
+        ],
+        "breakpoints": [
+         "p14.1",
+         "q22.3"
+        ]
+       }
+      ],
+      "tail": "mat"
+     },
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XX",
+   "sex_disclosed": true,
+   "karyotype_available": true,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "S02",
+  "group": "ПГТ-СР: структурные перестройки",
+  "description": "Тертиарная трисомия, сегрегация 3:1: сверхчисленная der(22)t(11;22)",
+  "case": {
+   "sample": "S02",
+   "events": [
+    {
+     "chrom": "11",
+     "copy_number": 3,
+     "start": 116000000,
+     "end": 135086622,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": "22",
+     "label": "",
+     "baseline": 2
+    },
+    {
+     "chrom": "22",
+     "copy_number": 3,
+     "start": 1,
+     "end": 21000000,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": {
+      "chain": [
+       {
+        "symbol": "der",
+        "chroms": [
+         "22"
+        ]
+       },
+       {
+        "symbol": "t",
+        "chroms": [
+         "11",
+         "22"
+        ],
+        "breakpoints": [
+         "q23.3",
+         "q11.21"
+        ]
+       }
+      ],
+      "tail": "pat"
+     },
+     "supernumerary": true,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XY",
+   "sex_disclosed": true,
+   "karyotype_available": true,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "S03",
+  "group": "ПГТ-СР: структурные перестройки",
+  "description": "Несбалансированный продукт робертсоновской транслокации: трисомия 14 при der(13;14) у носителя",
+  "case": {
+   "sample": "S03",
+   "events": [
+    {
+     "chrom": "14",
+     "copy_number": 3,
+     "start": null,
+     "end": null,
+     "scale": "chromosome",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    },
+    {
+     "chrom": "13",
+     "copy_number": 2,
+     "start": 1,
+     "end": 114364328,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": {
+      "chain": [
+       {
+        "symbol": "der",
+        "chroms": [
+         "13",
+         "14"
+        ],
+        "breakpoints": [
+         [
+          "q10"
+         ],
+         [
+          "q10"
+         ]
+        ]
+       }
+      ]
+     },
+     "supernumerary": false,
+     "explained_by": "14",
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XX",
+   "sex_disclosed": true,
+   "karyotype_available": true,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "S04",
+  "group": "ПГТ-СР: структурные перестройки",
+  "description": "Рекомбинантная хромосома от носителя инверсии",
+  "case": {
+   "sample": "S04",
+   "events": [
+    {
+     "chrom": "18",
+     "copy_number": 3,
+     "start": 1,
+     "end": 80373285,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": {
+      "chain": [
+       {
+        "symbol": "rec",
+        "chroms": [
+         "18"
+        ]
+       },
+       {
+        "symbol": "dup",
+        "chroms": [
+         "18q"
+        ],
+        "breakpoints": []
+       },
+       {
+        "symbol": "inv",
+        "chroms": [
+         "18"
+        ],
+        "breakpoints": [
+         "p11.32",
+         "q21"
+        ]
+       }
+      ],
+      "tail": "dpat"
+     },
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XY",
+   "sex_disclosed": true,
+   "karyotype_available": true,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "S05",
+  "group": "ПГТ-СР: структурные перестройки",
+  "description": "Кольцевая хромосома 14",
+  "case": {
+   "sample": "S05",
+   "events": [
+    {
+     "chrom": "14",
+     "copy_number": 2,
+     "start": 1,
+     "end": 107043718,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": {
+      "chain": [
+       {
+        "symbol": "r",
+        "chroms": [
+         "14"
+        ],
+        "breakpoints": [
+         "p13",
+         "q32"
+        ]
+       }
+      ]
+     },
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XY",
+   "sex_disclosed": true,
+   "karyotype_available": true,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "S06",
+  "group": "ПГТ-СР: структурные перестройки",
+  "description": "Изохромосома Xq у единственной X",
+  "case": {
+   "sample": "S06",
+   "events": [
+    {
+     "chrom": "X",
+     "copy_number": 2,
+     "start": 62800001,
+     "end": 155700000,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": {
+      "chain": [
+       {
+        "symbol": "i",
+        "chroms": [
+         "X"
+        ],
+        "breakpoints": [
+         "q10"
+        ]
+       }
+      ]
+     },
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 1
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XX",
+   "sex_disclosed": true,
+   "karyotype_available": true,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "S07",
+  "group": "ПГТ-СР: структурные перестройки",
+  "description": "Производная хромосома с тремя перестройками",
+  "case": {
+   "sample": "S07",
+   "events": [
+    {
+     "chrom": "1",
+     "copy_number": 3,
+     "start": 1,
+     "end": 248956422,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": {
+      "chain": [
+       {
+        "symbol": "der",
+        "chroms": [
+         "1"
+        ]
+       },
+       {
+        "symbol": "t",
+        "chroms": [
+         "1",
+         "3"
+        ],
+        "breakpoints": [
+         "p32",
+         "q21"
+        ]
+       },
+       {
+        "symbol": "dup",
+        "chroms": [
+         "1"
+        ],
+        "breakpoints": [
+         "q25",
+         "q42"
+        ]
+       }
+      ]
+     },
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XY",
+   "sex_disclosed": true,
+   "karyotype_available": true,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ },
+ {
+  "key": "S08",
+  "group": "ПГТ-СР: структурные перестройки",
+  "description": "Сегментное событие с установленной дозой, но неизвестным механизмом",
+  "case": {
+   "sample": "S08",
+   "events": [
+    {
+     "chrom": "7",
+     "copy_number": 1,
+     "start": 1,
+     "end": 25000000,
+     "scale": "segment",
+     "arm": null,
+     "flank_left": null,
+     "flank_right": null,
+     "flank_copy_number": null,
+     "copy_number_range": null,
+     "mosaic_fraction": null,
+     "mosaic_fraction_range": null,
+     "mosaic_fraction_unknown": false,
+     "inheritance": null,
+     "zygosity": null,
+     "structure": null,
+     "supernumerary": false,
+     "explained_by": null,
+     "label": "",
+     "baseline": 2
+    }
+   ],
+   "clones": [],
+   "assembly": "GRCh38",
+   "technique": "seq",
+   "ploidy": 2,
+   "sex_chromosomes": "XX",
+   "sex_disclosed": true,
+   "karyotype_available": false,
+   "cell_counts": null,
+   "chromatid": false,
+   "genome_zygosity": null,
+   "notes": ""
+  }
+ }
+]

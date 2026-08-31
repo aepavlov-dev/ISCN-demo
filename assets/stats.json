@@ -1,0 +1,342 @@
+{
+ "источник": {
+  "изображений": 377,
+  "знаков": 614143,
+  "отказов_распознавания": 0,
+  "знаков_текстом": 15104,
+  "пунктов_реестра": 64
+ },
+ "грамматика": {
+  "правил": 40,
+  "терминалов": 40
+ },
+ "батарея": {
+  "случаев": 45,
+  "образцов": 5,
+  "синтетики": 40,
+  "форм": 11,
+  "сочетаний": 495,
+  "допустимо": 245,
+  "отклонено_формой": 250,
+  "расхождений": 0,
+  "неоднозначных": 0,
+  "нарушений_в_своём_выводе": 0
+ },
+ "приёмка_книги": {
+  "побайтово": 19,
+  "всего": 19,
+  "кандидатов": 905,
+  "в_главах": 512,
+  "после_отсева": 493,
+  "принято": 385,
+  "вне_области": 73,
+  "не_разобрано": 35,
+  "неоднозначных": 0
+ },
+ "полосы": {
+  "проверено": 124,
+  "точно": 118,
+  "крупнее": 3,
+  "расходятся": 3
+ },
+ "отклонение": {
+  "грамматикой": 2,
+  "правилами": 6,
+  "не обнаружено": 1,
+  "всего": 9
+ },
+ "chebly": {
+  "верных": 20,
+  "неточных": 28,
+  "ошибочных": 52
+ },
+ "тесты": {
+  "пройдено": 786,
+  "пропущено": 250
+ },
+ "совпадения": {
+  "abbrev": {
+   "допустимых": 27,
+   "доля": 0.0,
+   "групп": 0
+  },
+  "abbrev_sex": {
+   "допустимых": 27,
+   "доля": 0.0,
+   "групп": 0
+  },
+  "short": {
+   "допустимых": 45,
+   "доля": 0.0889,
+   "групп": 2
+  },
+  "extended": {
+   "допустимых": 1,
+   "доля": 0.0,
+   "групп": 0
+  },
+  "abbrev_range": {
+   "допустимых": 27,
+   "доля": 0.1481,
+   "групп": 2
+  },
+  "short_range": {
+   "допустимых": 45,
+   "доля": 0.1778,
+   "групп": 4
+  },
+  "karyo_short": {
+   "допустимых": 6,
+   "доля": 0.0,
+   "групп": 0
+  },
+  "karyo_detailed": {
+   "допустимых": 6,
+   "доля": 0.0,
+   "групп": 0
+  },
+  "mixed": {
+   "допустимых": 16,
+   "доля": 0.0,
+   "групп": 0
+  },
+  "karyotype": {
+   "допустимых": 31,
+   "доля": 0.2581,
+   "групп": 3
+  },
+  "karyotype_mos": {
+   "допустимых": 14,
+   "доля": 0.3571,
+   "групп": 2
+  }
+ },
+ "формы": {
+  "abbrev": {
+   "название": "сокращённая система, микрочиповый формат",
+   "формат": "microarray",
+   "система": "abbreviated",
+   "пункты": "4.7.2b, 11.4.1"
+  },
+  "abbrev_sex": {
+   "название": "сокращённая система с явным половым набором",
+   "формат": "microarray",
+   "система": "abbreviated",
+   "пункты": "4.7.2b, 8.2.2, 11.2.2e"
+  },
+  "short": {
+   "название": "короткая система с координатами",
+   "формат": "microarray",
+   "система": "short",
+   "пункты": "4.7.2c, 11.4.2.1"
+  },
+  "extended": {
+   "название": "расширенная система с фланками",
+   "формат": "microarray",
+   "система": "extended",
+   "пункты": "4.7.2d, 11.4.2.1"
+  },
+  "abbrev_range": {
+   "название": "сокращённая система, мозаицизм диапазоном копийности",
+   "формат": "microarray",
+   "система": "abbreviated",
+   "пункты": "4.7.2b, 8.1.1e, 8.2.5"
+  },
+  "short_range": {
+   "название": "короткая система, мозаицизм диапазоном копийности",
+   "формат": "microarray",
+   "система": "short",
+   "пункты": "4.7.2c, 8.1.1e, 8.2.5"
+  },
+  "karyo_short": {
+   "название": "короткая система, кариотипный формат (цитобенды без координат)",
+   "формат": "karyotype",
+   "система": "short",
+   "пункты": "4.7.1, 11.4.2.1"
+  },
+  "karyo_detailed": {
+   "название": "подробная система, кариотипный формат",
+   "формат": "karyotype",
+   "система": "detailed",
+   "пункты": "4.7.1, 5.4.2.2, 11.4.2.3"
+  },
+  "mixed": {
+   "название": "смешанная запись: механизм кариотипным форматом, остальные события микрочиповым",
+   "формат": "mixed",
+   "система": "short",
+   "пункты": "4.4.5h, 11.2.2b"
+  },
+  "karyotype": {
+   "название": "классическая кариотипная строка",
+   "формат": "karyotype",
+   "система": "short",
+   "пункты": "4.2.1a, 5.2, 5.3"
+  },
+  "karyotype_mos": {
+   "название": "кариотипная строка с клонами (mos)",
+   "формат": "karyotype",
+   "система": "short",
+   "пункты": "4.5.3e, 4.5.3h"
+  }
+ },
+ "потери": {
+  "abbrev": {
+   "chromosome": true,
+   "direction": true,
+   "copy_number": true,
+   "breakpoint_bands": false,
+   "coordinates": false,
+   "flanking_normal": false,
+   "mosaic_fraction": true,
+   "mechanism": false,
+   "parental_origin": true,
+   "zygosity": true,
+   "sex_complement": false,
+   "segment_orientation": false
+  },
+  "abbrev_sex": {
+   "chromosome": true,
+   "direction": true,
+   "copy_number": true,
+   "breakpoint_bands": false,
+   "coordinates": false,
+   "flanking_normal": false,
+   "mosaic_fraction": true,
+   "mechanism": false,
+   "parental_origin": true,
+   "zygosity": true,
+   "sex_complement": true,
+   "segment_orientation": false
+  },
+  "short": {
+   "chromosome": true,
+   "direction": true,
+   "copy_number": true,
+   "breakpoint_bands": true,
+   "coordinates": true,
+   "flanking_normal": false,
+   "mosaic_fraction": true,
+   "mechanism": false,
+   "parental_origin": true,
+   "zygosity": true,
+   "sex_complement": false,
+   "segment_orientation": false
+  },
+  "extended": {
+   "chromosome": true,
+   "direction": true,
+   "copy_number": true,
+   "breakpoint_bands": true,
+   "coordinates": true,
+   "flanking_normal": true,
+   "mosaic_fraction": true,
+   "mechanism": false,
+   "parental_origin": true,
+   "zygosity": true,
+   "sex_complement": false,
+   "segment_orientation": false
+  },
+  "abbrev_range": {
+   "chromosome": true,
+   "direction": true,
+   "copy_number": true,
+   "breakpoint_bands": false,
+   "coordinates": false,
+   "flanking_normal": false,
+   "mosaic_fraction": false,
+   "mechanism": false,
+   "parental_origin": true,
+   "zygosity": true,
+   "sex_complement": false,
+   "segment_orientation": false
+  },
+  "short_range": {
+   "chromosome": true,
+   "direction": true,
+   "copy_number": true,
+   "breakpoint_bands": true,
+   "coordinates": true,
+   "flanking_normal": false,
+   "mosaic_fraction": false,
+   "mechanism": false,
+   "parental_origin": true,
+   "zygosity": true,
+   "sex_complement": false,
+   "segment_orientation": false
+  },
+  "karyo_short": {
+   "chromosome": true,
+   "direction": true,
+   "copy_number": false,
+   "breakpoint_bands": true,
+   "coordinates": false,
+   "flanking_normal": false,
+   "mosaic_fraction": false,
+   "mechanism": true,
+   "parental_origin": true,
+   "zygosity": false,
+   "sex_complement": false,
+   "segment_orientation": false
+  },
+  "karyo_detailed": {
+   "chromosome": true,
+   "direction": true,
+   "copy_number": false,
+   "breakpoint_bands": true,
+   "coordinates": false,
+   "flanking_normal": false,
+   "mosaic_fraction": false,
+   "mechanism": true,
+   "parental_origin": true,
+   "zygosity": false,
+   "sex_complement": false,
+   "segment_orientation": true
+  },
+  "mixed": {
+   "chromosome": true,
+   "direction": true,
+   "copy_number": true,
+   "breakpoint_bands": true,
+   "coordinates": true,
+   "flanking_normal": false,
+   "mosaic_fraction": true,
+   "mechanism": true,
+   "parental_origin": true,
+   "zygosity": true,
+   "sex_complement": false,
+   "segment_orientation": false
+  },
+  "karyotype": {
+   "chromosome": true,
+   "direction": true,
+   "copy_number": false,
+   "breakpoint_bands": true,
+   "coordinates": false,
+   "flanking_normal": false,
+   "mosaic_fraction": false,
+   "mechanism": true,
+   "parental_origin": true,
+   "zygosity": false,
+   "sex_complement": true,
+   "segment_orientation": false
+  },
+  "karyotype_mos": {
+   "chromosome": true,
+   "direction": true,
+   "copy_number": false,
+   "breakpoint_bands": true,
+   "coordinates": false,
+   "flanking_normal": false,
+   "mosaic_fraction": true,
+   "mechanism": true,
+   "parental_origin": true,
+   "zygosity": false,
+   "sex_complement": true,
+   "segment_orientation": false
+  }
+ },
+ "тесты_стенда": {
+  "пройдено": 20,
+  "пропущено": 0
+ }
+}
