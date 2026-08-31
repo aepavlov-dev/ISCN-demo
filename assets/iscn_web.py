@@ -284,11 +284,31 @@ def _describe_text(req: dict) -> dict:
         out["отказ"] = ("запись не прошла входной контроль: "
                         + verdict["итог"])
         return out
+    норм = verdict.get("нормализована") or text
     try:
-        case = IF.case_from_text(verdict.get("нормализована") or text, bands,
+        case = IF.case_from_text(норм, bands,
                                  sample=req.get("sample") or "запись извне",
                                  sex_chromosomes=(req.get("sex") or None))
     except IF.Irreconstructible as exc:
+        # Структурная перестройка описывается своим слоем: копийность в такой
+        # записи выражена самой перестройкой, а не числом копий.
+        if "структурную перестройку" in exc.reason or "num_chain" in exc.reason:
+            try:
+                res = VB.describe_record(норм, bands, _style_from(req))
+            except VB.Undescribable as exc2:
+                out["описание"] = None
+                out["отказ"] = exc2.reason
+                return out
+            out["описание"] = {
+                "профиль": res["профиль"], "категория": res.get("категория"),
+                "разделы": {k: (v if isinstance(v, str) else list(v))
+                            for k, v in res["разделы"].items()},
+                "текст": res["текст"], "проверка": res["проверка"]}
+            out["восстановлено"] = {
+                "вид": "структурная перестройка",
+                "хромосомы": res["проверка"].get("хромосом_в_записи", []),
+                "точки_разрыва": res["проверка"].get("точек_разрыва", [])}
+            return out
         out["описание"] = None
         out["отказ"] = exc.reason
         out["подробности"] = exc.detail

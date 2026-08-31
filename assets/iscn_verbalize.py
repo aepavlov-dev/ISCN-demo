@@ -37,7 +37,9 @@ from typing import Any, Dict, List, Optional, Sequence, Tuple
 
 import iscn_formula as IF
 
-__all__ = ["Style", "PROFILES", "verbalize", "check_text", "SYNDROMES",
+__all__ = [
+    "describe_record", "check_record_text", "describe_term", "SYMBOL_RU",
+    "Undescribable","Style", "PROFILES", "verbalize", "check_text", "SYNDROMES",
            "MOSAIC_LABELS", "MOSAIC_LABELS_PATIENT", "mosaic_bands", "load_regions", "describe_event"]
 
 
@@ -638,6 +640,321 @@ def _mechanism_text(ev: IF.Event, style: Style) -> str:
     if style.audience != "пациент":
         txt += " (механизм заявлен, а не выведен из копийности)"
     return txt
+
+
+# ---------------------------------------------------------------------------
+# Структурная перестройка: описание по разобранной записи
+# ---------------------------------------------------------------------------
+
+#: Обозначения структурных перестроек и их русские названия. Источник —
+#: перечень обозначений ISCN 2024, глава 3. Незнакомое обозначение не
+#: описывается: придумывать название перестройки нельзя.
+SYMBOL_RU = {
+    "t": ("реципрокная транслокация", "между хромосомами"),
+    # у обозначений, чьё название уже содержит слово «хромосома», номер
+    # ставится сразу за названием: «производная хромосома 22», а не
+    # «производная хромосома хромосомы 22»
+    "der": ("производная хромосома", ""),
+    "ider": ("изопроизводная хромосома", ""),
+    "del": ("делеция", "хромосомы"),
+    "dup": ("дупликация", "хромосомы"),
+    "inv": ("инверсия", "хромосомы"),
+    "ins": ("вставка", "хромосомы"),
+    "i": ("изохромосома", ""),
+    "idic": ("изодицентрическая хромосома", ""),
+    "dic": ("дицентрическая хромосома", ""),
+    "r": ("кольцевая хромосома", ""),
+    "rob": ("робертсоновская транслокация", "между хромосомами"),
+    "rec": ("рекомбинантная хромосома", ""),
+    "trp": ("трипликация", "хромосомы"),
+    "qdp": ("квадрупликация", "хромосомы"),
+    "add": ("добавочный материал неизвестного происхождения", "на хромосоме"),
+    "fis": ("центрическое разделение", "хромосомы"),
+    "trc": ("трирадиальная хромосома", "хромосом"),
+    "mar": ("маркерная хромосома неизвестного происхождения", ""),
+    "ace": ("ацентрический фрагмент", ""),
+}
+
+#: Пациентские формулировки с местом для номера хромосомы: без них номер
+#: приклеивается к названию («хромосома, замкнутая в кольцо 13»).
+SYMBOL_PATIENT_TMPL = {
+    "t": "хромосомы {n} обменялись участками",
+    "rob": "хромосомы {n} слились в одну",
+    "der": "перестроенная хромосома {n}",
+    "ider": "перестроенная хромосома {n} из двух одинаковых плеч",
+    "rec": "перестроенная хромосома {n}, возникшая при обмене участками у родителя",
+    "del": "утрачен участок хромосомы {n}",
+    "dup": "участок хромосомы {n} удвоен",
+    "trp": "участок хромосомы {n} утроен",
+    "qdp": "участок хромосомы {n} учетверён",
+    "inv": "участок хромосомы {n} развёрнут",
+    "i": "хромосома {n} состоит из двух одинаковых плеч",
+    "idic": "хромосома {n} состоит из двух одинаковых плеч и имеет два центра",
+    "dic": "хромосома {n} имеет два центра",
+    "r": "хромосома {n} замкнута в кольцо",
+    "add": "на хромосоме {n} добавочный участок неизвестного происхождения",
+    "fis": "хромосома {n} разделена по центру",
+    "mar": "хромосома неизвестного происхождения",
+    "ace": "обломок хромосомы без центра",
+}
+
+#: Пациентские формулировки для перестроек, затрагивающих две хромосомы: общий
+#: шаблон дал бы «хромосома 9 и 12 имеет два центра».
+SYMBOL_PATIENT_TMPL2 = {
+    "ins": "участок хромосомы {n2} перенесён внутрь хромосомы {n1}",
+    "dic": "хромосомы {n} соединены и имеют два центра",
+    "idic": "хромосомы {n} соединены, состоят из одинаковых плеч и имеют два центра",
+}
+
+#: Профессиональные формулировки, где общий вид даёт неверный падеж или
+#: неверную роль хромосом.
+SYMBOL_TMPL = {
+    "ins": "вставка участка хромосомы {n2} в хромосому {n1}",
+}
+
+#: Пациентские названия: без латинизмов, с указанием сути.
+SYMBOL_PATIENT = {
+    "t": "обмен участками между двумя хромосомами",
+    "der": "перестроенная хромосома",
+    "del": "утрата участка хромосомы",
+    "dup": "удвоение участка хромосомы",
+    "inv": "разворот участка хромосомы",
+    "ins": "перенос участка внутрь другой хромосомы",
+    "i": "хромосома из двух одинаковых плеч",
+    "idic": "хромосома из двух одинаковых плеч с двумя центрами",
+    "dic": "хромосома с двумя центрами",
+    "r": "хромосома, замкнутая в кольцо",
+    "rob": "слияние двух хромосом в одну",
+    "rec": "хромосома, перестроенная при обмене участками у родителя",
+    "trp": "утроение участка хромосомы",
+    "qdp": "учетверение участка хромосомы",
+    "add": "добавочный участок неизвестного происхождения",
+    "fis": "разделение хромосомы по центру",
+    "mar": "лишняя хромосома неизвестного происхождения",
+    "ace": "обломок хромосомы без центра",
+}
+
+
+class Undescribable(Exception):
+    """Перестройка не описывается: обозначение неизвестно."""
+
+    def __init__(self, reason: str) -> None:
+        super().__init__(reason)
+        self.reason = reason
+
+
+#: Творительный падеж для оборота «производная хромосома, образованная …».
+SYMBOL_INSTR = {
+    "t": "реципрокной транслокацией", "rob": "робертсоновской транслокацией",
+    "inv": "инверсией", "ins": "вставкой", "del": "делецией",
+    "dup": "дупликацией", "i": "изохромосомой", "rec": "рекомбинацией",
+    "fis": "центрическим разделением",
+}
+
+
+def describe_term(term, style: Style, instrumental: bool = False) -> str:
+    """Один член цепочки перестройки словами.
+
+    ``term`` — тройка (обозначение, хромосомы, точки разрыва) в том виде, в
+    каком её восстанавливает грамматика. Точки разрыва распределяются по
+    хромосомам по порядку групп: в ``t(9;22)(q34;q11.2)`` первая группа
+    относится к первой хромосоме, вторая — ко второй.
+    """
+    symbol, chroms, breaks = term
+    pat = style.term_register == "пациентский"
+    if symbol not in SYMBOL_RU:
+        raise Undescribable(f"обозначение «{symbol}» не описывается: "
+                            "название перестройки не придумывается")
+    chroms = [str(c) for c in chroms if c]
+    groups = [grp if isinstance(grp, tuple) else (grp,) for grp in (breaks or ())]
+    точки: List[str] = []
+    for k, grp in enumerate(groups):
+        chrom = chroms[k] if k < len(chroms) else (chroms[0] if chroms else "")
+        for b in grp:
+            точки.append(f"{chrom}{b}")
+
+    if pat:
+        tmpl2 = SYMBOL_PATIENT_TMPL2.get(symbol) if len(chroms) > 1 else None
+        if tmpl2:
+            return tmpl2.format(n=" и ".join(chroms),
+                                n1=chroms[0], n2=chroms[1])
+        tmpl = SYMBOL_PATIENT_TMPL.get(symbol)
+        if tmpl:
+            return tmpl.format(n=" и ".join(chroms) if chroms else "")
+        name = SYMBOL_PATIENT.get(symbol) or SYMBOL_RU[symbol][0]
+        return f"{name} {' и '.join(chroms)}".strip()
+
+    tmpl = SYMBOL_TMPL.get(symbol)
+    if tmpl and len(chroms) > 1:
+        head = tmpl.format(n1=chroms[0], n2=chroms[1])
+    else:
+        name = (SYMBOL_INSTR.get(symbol) if instrumental else None) \
+            or SYMBOL_RU[symbol][0]
+        prep = SYMBOL_RU[symbol][1]
+        номера = " и ".join(chroms) if len(chroms) > 1 else (chroms[0] if chroms else "")
+        head = f"{name} {prep} {номера}".strip() if prep else f"{name} {номера}".strip()
+    if точки:
+        head += (f" с {'точками разрыва' if len(точки) > 1 else 'точкой разрыва'} "
+                 + ", ".join(точки))
+    return head
+
+
+def describe_record(text: str, bands: IF.CytobandTable,
+                    style: Style | str = "генетик") -> Dict[str, Any]:
+    """Описание записи со структурной перестройкой.
+
+    Копийность в такой записи выражена не числом копий, а самой перестройкой,
+    поэтому слой описания идёт не от набора событий, а от разобранной строки.
+    Значимость по пяти категориям здесь не присваивается: сбалансированная по
+    копийности перестройка может быть и носительством без последствий, и
+    клональной находкой, и это решает врач по клиническому контексту.
+    """
+    st = PROFILES[style] if isinstance(style, str) else style
+    parsed = IF.parse(text)
+    facts = parsed["facts"]
+    pat = st.term_register == "пациентский"
+
+    chains, extra, counts, sex = [], [], [], None
+    for f in sorted(facts, key=str):
+        if f[0] == "chain":
+            chains.append(f[2])
+        elif f[0] == "num_chain":
+            extra.append((f[1], f[2]))
+        elif f[0] == "count":
+            counts.append(str(f[1]))
+        elif f[0] == "sex":
+            sex = str(f[1])
+        elif f[0] == "num":
+            extra.append((f[2], ((("хромосома", (str(f[1]),), ()),))))
+
+    literal: List[str] = []
+    for terms in chains:
+        phrases = [describe_term(t, st) for t in terms]
+        literal.append(_cap("; ".join(phrases)) + ".")
+    for sign, terms in extra:
+        if terms and terms[0][0] == "хромосома":
+            chrom = terms[0][1][0]
+            word = "дополнительная" if sign == "+" else "утраченная"
+            literal.append(_cap(f"{word} хромосома {chrom}") + ".")
+            continue
+        head = describe_term(terms[0], st)
+        # в пациентском регистре происхождение производной хромосомы не
+        # разворачивается: обмен участками уже назван первой фразой
+        rest = ([] if pat else
+                [describe_term(t, st, instrumental=True) for t in terms[1:]])
+        word = ("дополнительная (сверхчисленная)" if sign == "+"
+                else "утраченная")
+        literal.append(_cap(f"{word} {head}") +
+                       (f", образованная {'; '.join(rest)}" if rest else "") + ".")
+    if counts:
+        literal.append(f"Число хромосом в записи: {'~'.join(sorted(set(counts)))}.")
+    if sex:
+        literal.append(f"Половой набор, заявленный в записи: {sex}.")
+
+    significance = [
+        "Механизм перестройки и точки разрыва в записи названы; "
+        "отнесение находки к категории значимости требует клинического "
+        "контекста и в записи не содержится."
+        if not pat else
+        "В записи описано, как перестроены хромосомы; что это значит для "
+        "здоровья, определяет врач по клинической картине.",
+    ]
+    if any(t[0] in ("t", "inv", "rob") for terms in chains for t in terms)             and not extra:
+        significance.append(
+            "По копийности перестройка сбалансирована: количество материала не "
+            "изменено, и метод, измеряющий копийность, такую перестройку не "
+            "видит." if not pat else
+            "Количество материала при такой перестройке не изменено, поэтому "
+            "метод, который считает копии, её не замечает.")
+    if extra:
+        significance.append(
+            "Сверхчисленная производная хромосома добавляет материал "
+            "перестроенных хромосом, то есть запись описывает несбалансированный "
+            "результат." if not pat else
+            "Лишняя перестроенная хромосома добавляет материал, то есть "
+            "количество материала изменено.")
+
+    limits = [
+        "Точки разрыва приведены в полосах, а не в нуклеотидных координатах: "
+        "разрешение цитогенетического метода этого не даёт."
+        if not pat else
+        "Границы перестройки указаны приблизительно — так позволяет метод.",
+        "Запись описывает то, что наблюдалось; сбалансированность по "
+        "последовательности (сохранность рамок и регуляторных участков) "
+        "цитогенетическим методом не устанавливается."
+        if not pat else
+        "Метод показывает крупные перестройки и не проверяет мелкие поломки "
+        "внутри участков.",
+    ]
+    steps = [
+        "сверка с кариотипом родителей возможна и позволяет установить, "
+        "унаследована ли перестройка"
+        if not pat else "исследование родителей возможно",
+        "результат подлежит обсуждению на медико-генетическом консультировании"
+        if st.counselling_note else None,
+    ]
+    steps = [s for s in steps if s]
+
+    sections: Dict[str, Any] = {}
+    if st.include_formula:
+        sections["формула"] = text
+    sections["расшифровка"] = literal
+    sections["значимость"] = [_cap(s) for s in significance]
+    if st.limits_layer:
+        sections["ограничения"] = [_cap(s) + "." if not s.endswith(".") else _cap(s)
+                                   for s in limits]
+    if st.next_steps_layer:
+        sections["что_дальше"] = [_cap(s) + "." for s in steps]
+
+    out = {"профиль": st.name, "категория": "структурная перестройка",
+           "разделы": sections, "текст": _assemble(sections, st)}
+    out["проверка"] = check_record_text(out["текст"], facts, st)
+    return out
+
+
+def check_record_text(text: str, facts, style: Style) -> Dict[str, Any]:
+    """Обратная проверка описания перестройки: факты извлекаются из текста.
+
+    Проверяется то, что проверяемо механически: каждая названная в записи
+    хромосома и каждая точка разрыва должны присутствовать в тексте, а каждое
+    обозначение — иметь русское название.
+    """
+    problems: List[str] = []
+    chroms, breaks, symbols = set(), set(), set()
+    for f in facts:
+        if f[0] in ("chain", "num_chain"):
+            for symbol, cs, bs in f[2]:
+                symbols.add(symbol)
+                cs_ = [str(c) for c in cs if c]
+                chroms |= set(cs_)
+                groups = [g if isinstance(g, tuple) else (g,) for g in (bs or ())]
+                for k, grp in enumerate(groups):
+                    chrom = cs_[k] if k < len(cs_) else (cs_[0] if cs_ else "")
+                    breaks |= {f"{chrom}{b}" for b in grp}
+        elif f[0] == "num":
+            chroms.add(str(f[1]))
+    low = text.lower()
+    for c in sorted(chroms):
+        c_low = c.lower()
+        назван = (re.search(rf"хромосом\w*\s+{re.escape(c_low)}\b", low)
+                  or re.search(rf"\b{re.escape(c_low)}\s+и\b", low)
+                  or re.search(rf"\bи\s+{re.escape(c_low)}\b", low))
+        if not назван:
+            problems.append(f"хромосома {c} в тексте не названа")
+    if style.term_register != "пациентский":
+        for b in sorted(breaks):
+            if b not in text:
+                problems.append(f"точка разрыва {b} в тексте отсутствует")
+    unknown = sorted(s for s in symbols if s not in SYMBOL_RU)
+    if unknown:
+        problems.append("обозначения без русского названия: " + ", ".join(unknown))
+    for pat_, why in FORBIDDEN:
+        if re.search(pat_, text, re.I):
+            problems.append(f"запрещённая формулировка: {why}")
+    return {"итог": "ок" if not problems else "расхождение",
+            "замечания": problems,
+            "хромосом_в_записи": sorted(chroms),
+            "точек_разрыва": sorted(breaks)}
 
 
 # ---------------------------------------------------------------------------
